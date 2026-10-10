@@ -3248,6 +3248,21 @@ window.KK_DATA = {
     { date: "2026-10-29", time: "21:30", title: "Легендарная длинная форма импровизации Prosecco Show", place: "Stand Up Store", url: "" }
   ],
 
+  // Аналитика: откуда пришёл человек и что делал. webhook — Production URL узла Webhook в n8n
+  tracking: { webhook: "" },
+
+  // Контакт перед первой картой. Номер приходит боту (обрабатывает n8n).
+  // privacyUrl — ссылка на политику обработки данных; пока пустая, строка о согласии без ссылки
+  contactGate: {
+    on: true,
+    title: "Сначала познакомимся",
+    text: "Поделитесь контактом, чтобы вытянуть карту. Так мы пришлём бонус за 7 дней подряд и подарок за все 33 карты.",
+    button: "Поделиться контактом",
+    consent: "Нажимая кнопку, вы соглашаетесь на обработку персональных данных",
+    privacyUrl: "",
+    declined: "Без контакта карта не откроется. Нажмите ещё раз, когда будете готовы."
+  },
+
   // Арт Лаб в афише: ближайшие даты считаются сами. weekday: 1 — понедельник … 7 — воскресенье
   artLab: {
     title: "Арт Лаб",
@@ -3610,7 +3625,7 @@ window.KK_DATA = {
   .claim span:last-child { text-align: right; }
   .claim .mark13 { width: 46px; height: auto; color: var(--text); display: block; }
   .claim .mid { display: flex; align-items: center; gap: 8px; align-self: center; }
-  .claim .logo-mid { width: clamp(78px, 22vw, 120px); height: auto; display: block; }
+  .claim .logo-mid { width: clamp(92px, 28vw, 140px); height: auto; display: block; }
   .claim .mid .mark13 { width: clamp(26px, 8vw, 36px); }
   .claim-note { font-size: 11px; color: var(--muted); margin: 8px 0 20px; }
   .deck-name .mark13 { width: 18px; height: auto; color: var(--red); display: inline-block; vertical-align: -3px; margin-right: 6px; }
@@ -3733,6 +3748,12 @@ window.KK_DATA = {
   .flip.open { transform: rotateY(180deg); cursor: default; }
   .flip img { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 14px; backface-visibility: hidden; -webkit-backface-visibility: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.18), 0 20px 50px rgba(255,0,0,.18); }
   .flip .face { transform: rotateY(180deg); }
+  .gate { margin-top: 18px; padding: 20px 18px; border-radius: 22px; background: var(--card); border: 1px solid var(--red); text-align: center; }
+  .gate .g-title { font-size: 28px; margin-bottom: 8px; }
+  .gate .g-text { font-size: 15px; color: #DADADA; margin-bottom: 16px; }
+  .gate .pill { width: 100%; padding: 15px 18px; }
+  .gate .g-note { margin-top: 10px; font-size: 11px; color: var(--muted); }
+  .gate .g-note a { color: var(--muted); text-decoration: underline; }
   .tap-hint { text-align: center; font-size: 13px; color: var(--muted); margin-top: 14px; }
   .task { margin-top: 20px; padding: 18px; border-radius: 20px; background: var(--text); color: #000; }
   .task .tag { margin-bottom: 10px; }
@@ -3927,7 +3948,8 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
 
   // ---------- Хранилище прогресса (облако Телеграма) ----------
   var KEY = "pc_deck_v1";
-  var state = { last: "", lastOpen: "", streak: 0, got: [], todayCard: 0, opened: false };
+  var state = { last: "", lastOpen: "", streak: 0, got: [], todayCard: 0, opened: false, contact: false, src: "", firstSeen: "", phone: "" };
+  var gateDeclined = false;
   var cloud = !!(tg && tg.CloudStorage && tg.isVersionAtLeast && tg.isVersionAtLeast("6.9"));
   function load(cb) {
     if (!cloud) return cb();
@@ -3941,6 +3963,17 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   function save() {
     if (!cloud) return;
     try { tg.CloudStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  // ---------- Источник и аналитика ----------
+  var src = "direct";
+  try { if (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) src = String(tg.initDataUnsafe.start_param); } catch (e) {}
+  function track(event, extra) {
+    var T = D.tracking; if (!T || !T.webhook || !tg || !tg.initData) return;
+    var body = { event: event, source: src, firstSource: state.src || src, firstSeen: state.firstSeen, phone: state.phone,
+      cards: state.got.length, streak: state.streak, initData: tg.initData };
+    if (extra) for (var k in extra) body[k] = extra[k];
+    try { fetch(T.webhook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), keepalive: true }); } catch (e) {}
   }
 
   // ---------- Карта дня ----------
@@ -3969,6 +4002,8 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     state.lastOpen = today();
     if (state.got.indexOf(state.todayCard) === -1) state.got.push(state.todayCard);
     save();
+    track("card", { card: state.todayCard });
+    if (state.got.length >= 33) track("deck_complete");
     haptic("success");
   }
   function timeToNext() {
@@ -4084,7 +4119,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     ensureToday();
     var H = D.home, h = "";
     h += '<p class="hello">' + esc(H.hello) + (user && user.first_name ? ", " + esc(user.first_name) : "") + "!</p>";
-    h += '<div class="claim"><span class="disp">' + esc(H.claimLeft) + '</span><span class="mid"><img class="logo-mid" src="' + LOGO + '" alt="Prosecco Show">' + MARK + '</span><span class="disp">' + esc(H.claimRight) + '</span></div><p class="claim-note">' + esc(H.claimNote) + "</p>";
+    h += '<div class="claim"><span class="disp">' + esc(H.claimLeft) + '</span><span class="mid"><img class="logo-mid" src="' + LOGO + '" alt="Prosecco Show"></span><span class="disp">' + esc(H.claimRight) + '</span></div><p class="claim-note">' + esc(H.claimNote) + "</p>";
 
     var I = D.invite;
     if (I) h += '<button class="invite" data-invite="1"><span class="i-title disp">' + esc(I.button) + '</span><span class="i-cap">' + esc(I.note) + '</span><span class="i-ar" aria-hidden="true">→</span></button>';
@@ -4170,6 +4205,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     for (var k = 0; k < D.quiz.length; k++) { var t = ansText(k); if (t) lines.push((lbl[k] || D.quiz[k].q) + ": " + low(t)); }
     lines.push("Понравились: " + list.map(function (x) { return x.f.title; }).join(", "));
     if (D.quizEdu && D.quizEdu.why[quizAns[1]]) lines.push("Интересно обучение: " + D.quizEdu.title);
+    if (src !== "direct") lines.push("Источник: " + src);
     return lines.join("\n");
   }
   function eduCard(E, w) {
@@ -4192,6 +4228,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     });
     if (ew && quizAns[1] !== "learn") h += eduCard(E, ew);
     h += "</div>";
+    track("quiz", { answers: quizAns.join(","), picks: r.map(function (x) { return x.f.title; }).join(", ") });
     var QF = D.quizFinal;
     if (QF) {
       if (quizAns.indexOf(QF.hotId) !== -1) h += '<div class="hot">' + esc(QF.hot) + "</div>";
@@ -4309,7 +4346,11 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
       '<div class="stat"><b>' + state.got.length + '<span style="font-size:16px;color:var(--muted)"> / 33</span></b><span>карт в коллекции</span></div></div>';
     h += '<div class="stage"><div class="flip' + (state.opened ? " open" : "") + '" id="flip" role="button" aria-label="Открыть карту дня">' +
       '<img class="back-img" src="' + IMG[0] + '" alt="Рубашка карты"><img class="face" src="' + (IMG[state.todayCard] || "") + '" alt="' + esc(c ? c.title : "") + '"></div></div>';
-    if (!state.opened) {
+    if (!state.opened && needContact()) {
+      var G = D.contactGate;
+      h += '<div class="gate"><p class="g-title disp">' + esc(G.title) + '</p><p class="g-text">' + esc(gateDeclined ? G.declined : G.text) + '</p>' +
+        '<button class="pill red" data-contact="1">' + esc(G.button) + '</button><p class="g-note">' + (G.privacyUrl ? link(G.privacyUrl, "", esc(G.consent)) : esc(G.consent)) + "</p></div>";
+    } else if (!state.opened) {
       h += '<p class="tap-hint">Нажмите на карту, чтобы открыть</p>';
     } else {
       h += cardAfter(c);
@@ -4422,9 +4463,26 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   function tab(id) { closeSheet(); stack = id === "home" ? ["home"] : ["home", id]; haptic("light"); render(); }
   if (tg && tg.BackButton) { try { tg.BackButton.onClick(back); } catch (e) {} }
 
+  function needContact() {
+    var G = D.contactGate;
+    return !!(G && G.on && !state.contact && tg && tg.requestContact && tg.isVersionAtLeast && tg.isVersionAtLeast("6.9"));
+  }
+  function askContact() {
+    try {
+      tg.requestContact(function (shared) {
+        if (shared) {
+          try { var ru = arguments[1] && arguments[1].responseUnsafe; if (ru && ru.contact && ru.contact.phone_number) state.phone = String(ru.contact.phone_number); } catch (e) {}
+          state.contact = true; gateDeclined = false; save(); track("contact");
+          haptic("success"); render(true); setTimeout(reveal, 300);
+        }
+        else { gateDeclined = true; haptic("light"); render(true); }
+      });
+    } catch (e) { state.contact = true; save(); render(true); }
+  }
   function reveal() {
     var el = document.getElementById("flip");
     if (!el || state.opened) return;
+    if (needContact()) { askContact(); return; }
     openToday();
     el.classList.add("open");
     setTimeout(function () { render(true); }, 650);
@@ -4467,7 +4525,8 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   function share() {
     var c = deckCard(state.todayCard); if (!c) return;
     var text = "Моя карта дня — «" + c.title + "». Задание: " + c.task + " Вытяни свою:";
-    openUrl("https://t.me/share/url?url=" + encodeURIComponent(D.appLink) + "&text=" + encodeURIComponent(text));
+    var ref = D.appLink.replace(/\?startapp(=.*)?$/, "") + "?startapp=ref_" + (user && user.id ? user.id : "guest");
+    openUrl("https://t.me/share/url?url=" + encodeURIComponent(ref) + "&text=" + encodeURIComponent(text));
   }
 
   function bind(root) {
@@ -4483,6 +4542,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     els = root.querySelectorAll("[data-restart]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { quizAns = []; stack[stack.length - 1] = "quiz"; render(); });
     els = root.querySelectorAll("[data-fmt]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { openSheet(formatSheet(+this.getAttribute("data-fmt"))); });
     els = root.querySelectorAll("[data-cat]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { catFilter = this.getAttribute("data-cat"); haptic("light"); render(true); });
+    els = root.querySelectorAll("[data-contact]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", askContact);
     els = root.querySelectorAll("[data-share]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", share);
     els = root.querySelectorAll("[data-zoom]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () {
       var n = +this.getAttribute("data-zoom"), c = deckCard(n);
@@ -4494,7 +4554,11 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     var f = root.querySelector("#flip"); if (f && !state.opened) f.addEventListener("click", reveal);
   }
 
-  load(function () { render(); });
+  load(function () {
+    if (!state.src) state.src = src;
+    if (!state.firstSeen) state.firstSeen = new Date().toISOString();
+    save(); track("open"); render();
+  });
 })();
 </script>
 </body>
