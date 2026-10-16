@@ -3522,6 +3522,10 @@ window.KK_DATA = {
 
   // Яркая кнопка на главной — ведёт в подбор шоу
   invite: { button: "Пригласить Prosecco Show на мероприятие", note: "Подберём шоу за 4 вопроса" },
+  // Акция: сама появляется с from по to (баннер на главной и в Афише + окно раз в день). on: false — выключить.
+  // url пустой — кнопка ведёт в Афишу приложения. code — промокод (необязательно).
+  promo: { on: false, from: "2026-11-01", to: "2026-11-30", tag: "Только в ноябре", title: "Чёрный ноябрь",
+    text: "", code: "", button: "Выбрать шоу", url: "" },
 
   // Блок «О нас» на главной
   about: {
@@ -3803,6 +3807,12 @@ window.KK_DATA = {
   .invite .i-cap { display: block; font-size: 13px; margin-top: 8px; opacity: .9; }
   .invite .i-ar { position: absolute; right: 18px; top: 18px; font-size: 26px; line-height: 1; }
   .invite::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 40%, rgba(255,255,255,.22) 50%, transparent 60%); transform: translateX(-100%); animation: shine 4.5s ease-in-out infinite 1.2s; }
+  .promo { display: block; width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 22px; background: #000; border: 2px solid var(--red); color: #fff; text-align: left; position: relative; }
+  .promo .p-tag { display: inline-block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; background: var(--red); color: #fff; padding: 4px 8px; border-radius: 6px; }
+  .promo .p-title { display: block; font-size: 30px; margin-top: 10px; padding-right: 30px; }
+  .promo .p-text { display: block; font-size: 14px; margin-top: 6px; color: var(--muted); }
+  .promo .p-code { display: inline-block; margin-top: 10px; font-family: var(--display); font-size: 18px; letter-spacing: .06em; border: 1px dashed var(--red); padding: 4px 10px; border-radius: 8px; }
+  .promo .p-ar { position: absolute; right: 18px; top: 18px; font-size: 26px; line-height: 1; color: var(--red); }
   @keyframes shine { 0%, 70% { transform: translateX(-100%); } 85%, 100% { transform: translateX(100%); } }
 
   /* О нас */
@@ -3939,6 +3949,17 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   var AR = '<span class="ar" aria-hidden="true">›</span>';
   var MON = ["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
   function parseDate(s) { var p = s.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function promoLive() {
+    var P = D.promo; if (!P || !P.on) return false;
+    var t = new Date(); t.setHours(0, 0, 0, 0);
+    return t >= parseDate(P.from) && t <= parseDate(P.to);
+  }
+  function promoCard() {
+    var P = D.promo;
+    return '<button class="promo" data-promo="1"><span class="p-tag">' + esc(P.tag) + '</span><span class="p-title disp">' + esc(P.title) + "</span>" +
+      (P.text ? '<span class="p-text">' + esc(P.text) + "</span>" : "") + (P.code ? '<span class="p-code">' + esc(P.code) + "</span>" : "") +
+      '<span class="p-ar" aria-hidden="true">→</span></button>';
+  }
   function ymd(d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
   function today() { return ymd(new Date()); }
   function yesterday() { var d = new Date(); d.setDate(d.getDate() - 1); return ymd(d); }
@@ -3968,6 +3989,16 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   // ---------- Источник и аналитика ----------
   var src = "direct";
   try { if (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) src = String(tg.initDataUnsafe.start_param); } catch (e) {}
+  // Прямые ссылки на разделы: ?startapp=afisha или ?startapp=afisha__метка (метка остаётся источником)
+  var START_SCREENS = { afisha: "events", quiz: "quiz", card: "card", video: "watch", contact: "contact", catalog: "catalog", edu: "edu", promo: "promo" };
+  var startScreen = null;
+  (function () {
+    var parts = src.split("__");
+    if (START_SCREENS[parts[0]]) {
+      startScreen = START_SCREENS[parts[0]];
+      src = parts.length > 1 && parts.slice(1).join("__") ? parts.slice(1).join("__") : parts[0];
+    }
+  })();
   function track(event, extra) {
     var T = D.tracking; if (!T || !T.webhook || !tg || !tg.initData) return;
     var body = { event: event, source: src, firstSource: state.src || src, firstSeen: state.firstSeen, phone: state.phone,
@@ -4121,6 +4152,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     h += '<p class="hello">' + esc(H.hello) + (user && user.first_name ? ", " + esc(user.first_name) : "") + "!</p>";
     h += '<div class="claim"><span class="disp">' + esc(H.claimLeft) + '</span><span class="mid"><img class="logo-mid" src="' + LOGO + '" alt="Prosecco Show"></span><span class="disp">' + esc(H.claimRight) + '</span></div><p class="claim-note">' + esc(H.claimNote) + "</p>";
 
+    if (promoLive()) h += promoCard();
     var I = D.invite;
     if (I) h += '<button class="invite" data-invite="1"><span class="i-title disp">' + esc(I.button) + '</span><span class="i-cap">' + esc(I.note) + '</span><span class="i-ar" aria-hidden="true">→</span></button>';
 
@@ -4288,7 +4320,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   S.events = function () {
     var t = new Date(); t.setHours(0, 0, 0, 0);
     var list = D.events.filter(function (e) { return parseDate(e.date) >= t; }).sort(function (a, b) { return parseDate(a.date) - parseDate(b.date); });
-    var h = top(stack.length > 1) + '<h1 class="h1 disp">Афиша</h1><p class="lead">Шоу Prosecco Show в Москве.</p>';
+    var h = top(stack.length > 1) + '<h1 class="h1 disp">Афиша</h1><p class="lead">Шоу Prosecco Show в Москве.</p>' + (promoLive() ? promoCard() : "");
     function evRow(d, title, cap, url) {
       var inner = '<span class="ev-date"><span class="ev-day disp">' + d.getDate() + '</span><span class="ev-mon">' + MON[d.getMonth()] + "</span></span>" +
         '<span class="ev-body"><span class="row-title">' + esc(title) + '</span><span class="row-cap">' + esc(cap) + "</span>" +
@@ -4518,9 +4550,27 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   }
   function onLink(e) {
     var url = this.getAttribute("data-url");
+    if (url && this.classList.contains("ev")) {
+      var tt = this.querySelector(".row-title");
+      track("ticket_click", { url: url, show: tt ? tt.textContent : "" });
+    }
     if (!url || !inTelegram) return; // в обычном браузере ссылка открывается сама
     e.preventDefault();
     openUrl(url);
+  }
+  function promoGo() {
+    var P = D.promo; track("promo_click", { promo: P.title });
+    closeSheet();
+    if (P.url) openUrl(P.url); else { stack = ["home", "events"]; haptic("light"); render(); }
+  }
+  function promoPopup() {
+    var P = D.promo;
+    openSheet('<div style="text-align:center;padding:6px 4px 4px"><span class="tag">' + esc(P.tag) + '</span>' +
+      '<h2 class="disp" style="font-size:40px;margin:12px 0 6px">' + esc(P.title) + "</h2>" +
+      (P.text ? '<p style="color:var(--muted);margin:0 0 12px">' + esc(P.text) + "</p>" : "") +
+      (P.code ? '<p style="margin:0 0 16px">Промокод: <b class="disp" style="font-size:20px;letter-spacing:.06em">' + esc(P.code) + "</b></p>" : "") +
+      '<button class="invite" data-promo="1" style="text-align:center"><span class="i-title disp" style="padding:0">' + esc(P.button) + "</span></button></div>");
+    track("promo_view", { promo: P.title });
   }
   function share() {
     var c = deckCard(state.todayCard); if (!c) return;
@@ -4543,6 +4593,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     els = root.querySelectorAll("[data-fmt]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { openSheet(formatSheet(+this.getAttribute("data-fmt"))); });
     els = root.querySelectorAll("[data-cat]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { catFilter = this.getAttribute("data-cat"); haptic("light"); render(true); });
     els = root.querySelectorAll("[data-contact]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", askContact);
+    els = root.querySelectorAll("[data-promo]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", promoGo);
     els = root.querySelectorAll("[data-share]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", share);
     els = root.querySelectorAll("[data-zoom]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () {
       var n = +this.getAttribute("data-zoom"), c = deckCard(n);
@@ -4557,7 +4608,13 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   load(function () {
     if (!state.src) state.src = src;
     if (!state.firstSeen) state.firstSeen = new Date().toISOString();
-    save(); track("open"); render();
+    var wantPromo = startScreen === "promo";
+    if (wantPromo) startScreen = null;
+    if (startScreen) stack = ["home", startScreen];
+    var showPromo = D.promo && D.promo.on && (wantPromo || (promoLive() && state.promoSeen !== today()));
+    if (showPromo) state.promoSeen = today();
+    save(); track("open", startScreen ? { screen: startScreen } : (wantPromo ? { screen: "promo" } : null)); render();
+    if (showPromo) setTimeout(promoPopup, 600);
   });
 })();
 </script>
