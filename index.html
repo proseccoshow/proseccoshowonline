@@ -4482,8 +4482,10 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     var nav = document.getElementById("navIn"); nav.innerHTML = h; bind(nav);
   }
 
+  var lastScreen = null;
   function render(noScroll) {
     var cur = stack[stack.length - 1];
+    if (cur !== lastScreen) { if (lastScreen !== null) track("screen", { screen: cur }); lastScreen = cur; }
     app.innerHTML = (S[cur] || S.home)();
     if (!noScroll) window.scrollTo(0, 0);
     bind(app); renderNav(); syncChrome();
@@ -4554,6 +4556,8 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     if (url && this.classList.contains("ev")) {
       var tt = this.querySelector(".row-title");
       track("ticket_click", { url: url, show: tt ? tt.textContent : "" });
+    } else if (url) {
+      track("link_click", { url: url, label: String(this.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80), screen: stack[stack.length - 1] });
     }
     if (!url || !inTelegram) return; // в обычном браузере ссылка открывается сама
     e.preventDefault();
@@ -4575,6 +4579,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   }
   function share() {
     var c = deckCard(state.todayCard); if (!c) return;
+    track("share_card", { card: c.n });
     var text = "Моя карта дня — «" + c.title + "». Задание: " + c.task + " Вытяни свою:";
     var ref = D.appLink.replace(/\?startapp(=.*)?$/, "") + "?startapp=ref_" + (user && user.id ? user.id : "guest");
     openUrl("https://t.me/share/url?url=" + encodeURIComponent(ref) + "&text=" + encodeURIComponent(text));
@@ -4591,7 +4596,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
       if (quizAns.length >= D.quiz.length) { stack[stack.length - 1] = "results"; render(); } else render();
     });
     els = root.querySelectorAll("[data-restart]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { quizAns = []; stack[stack.length - 1] = "quiz"; render(); });
-    els = root.querySelectorAll("[data-fmt]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { openSheet(formatSheet(+this.getAttribute("data-fmt"))); });
+    els = root.querySelectorAll("[data-fmt]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { track("format_view", { format: String(this.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80) }); openSheet(formatSheet(+this.getAttribute("data-fmt"))); });
     els = root.querySelectorAll("[data-cat]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { catFilter = this.getAttribute("data-cat"); haptic("light"); render(true); });
     els = root.querySelectorAll("[data-contact]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", askContact);
     els = root.querySelectorAll("[data-promo]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", promoGo);
@@ -4601,8 +4606,8 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
       openSheet('<div style="display:flex;justify-content:center"><img src="' + IMG[n] + '" alt="" style="width:min(70vw,300px);border-radius:12px;box-shadow:0 0 0 1px rgba(255,255,255,.18)"></div>' +
         '<div class="task"><span class="tag">Задание · ' + esc(levelOf(n).name) + "</span><p>" + esc(c.task) + "</p></div>");
     });
-    els = root.querySelectorAll("[data-dl]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", onDownload);
-    els = root.querySelectorAll("[data-invite]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { closeSheet(); quizAns = []; stack = ["home", "quiz"]; haptic("medium"); render(); });
+    els = root.querySelectorAll("[data-dl]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function (e) { track("download", { file: this.getAttribute("data-dl") }); return onDownload.call(this, e); });
+    els = root.querySelectorAll("[data-invite]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { track("invite_click", { screen: stack[stack.length - 1] }); closeSheet(); quizAns = []; stack = ["home", "quiz"]; haptic("medium"); render(); });
     var f = root.querySelector("#flip"); if (f && !state.opened) f.addEventListener("click", reveal);
   }
 
