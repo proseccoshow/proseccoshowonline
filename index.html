@@ -3222,11 +3222,11 @@ window.KK_DATA = {
 
   // Большая плашка на главной. Чтобы убрать — удалите блок целиком.
   featured: {
-    tag: "4–8 ноября 2026",
-    title: "Импро-кэмп на Валдае",
-    text: "Пять дней импровизации на природе с Ильёй Шалашовым и Николаем Тисенко.",
-    button: "Подробнее",
-    url: "https://iznutrinaruzhu.ru/impro_camp"
+    tag: "Новое в Forbes",
+    title: "Резиденты Forbes Club на мастер-классе Prosecco Show",
+    text: "Как методология Prosecco Show влияет на резидентов Forbes Club.",
+    button: "Читать в Forbes",
+    url: "https://www.forbes.ru/club/570454-rezidenty-forbes-club-posetili-master-klass-po-improvizacii"
   },
 
   // Чай от партнёров — блок на главной. Чтобы убрать — удалите блок целиком.
@@ -3243,7 +3243,6 @@ window.KK_DATA = {
   // ---------- ШОУ PROSECCO SHOW ----------
   // Дата в формате ГГГГ-ММ-ДД. Прошедшие скрываются сами. Пустой url — «Скоро добавим ссылку».
   events: [
-    { date: "2026-10-19", time: "21:30", title: "Комики против проблем ивенторов с Адисом Маммо", place: "Stand Up Store", url: "https://standupstore.ru/events/komiki-protiv-problem-19-oktyabrya-2026-v-21-30/" },
     { date: "2026-10-25", time: "16:00", title: "Музыкальная импровизация Prosecco Show", place: "Stand Up Store", url: "https://standupstore.ru/events/muzykalnaya-improvizaciya-25-oktyabrya-2026-v-16-00/" },
     { date: "2026-10-29", time: "21:30", title: "Легендарная длинная форма импровизации Prosecco Show", place: "Stand Up Store", url: "https://standupstore.ru/events/teatralnaya-improvizaciya-29-oktyabrya-2026-v-21-30/" },
     { date: "2026-11-03", time: "21:30", title: "Комики против проблем. Гость — Тамби Масаев", place: "Stand Up Store", url: "https://widget.afisha.yandex.ru/w/sessions/ticketsteam-10034@77199254?clientKey=5e7cc37f-c3af-4c38-b9a4-e98524571ae8&regionId=213" }
@@ -3428,7 +3427,6 @@ window.KK_DATA = {
   // ---------- ОБУЧЕНИЕ ----------
   eduSelf: [
     { tag: "Каждый понедельник", title: "Арт Лаб", text: "Практика импровизации вживую, в 19:00.", button: "Купить билет", url: "https://moscow.qtickets.events/237834-art-lab-prosecco-show" },
-    { tag: "4–8 ноября", title: "Импро-кэмп на Валдае", text: "Пять дней импровизации на природе.", button: "Подробнее", url: "https://iznutrinaruzhu.ru/impro_camp" },
     { tag: "Каждый день", title: "Карта дня", text: "Карта из колоды «33 уровня присутствия» и задание на сегодня.", button: "Открыть", go: "card" },
     { tag: "Клуб", title: "Закрытый клуб PRSCC+", text: "Онлайн-практики, Арт Лаб со скидкой 50% и материалы, которых нет в канале.", button: "Как вступить", url: "https://t.me/prosecco_show" }
   ],
@@ -3525,8 +3523,16 @@ window.KK_DATA = {
   invite: { button: "Пригласить Prosecco Show на мероприятие", note: "Подберём шоу за 4 вопроса" },
   // Акция: сама появляется с from по to (баннер на главной и в Афише + окно раз в день). on: false — выключить.
   // url пустой — кнопка ведёт в Афишу приложения. code — промокод (необязательно).
-  promo: { on: false, from: "2026-11-01", to: "2026-11-30", tag: "Только в ноябре", title: "Чёрный ноябрь",
-    text: "", code: "", button: "Выбрать шоу", url: "" },
+  promo: { on: true, from: "2026-10-22", to: "2026-11-30", tag: "Весь ноябрь · для партнёров", title: "Чёрный ноябрь 🖤",
+    text: "Перед декабрём событий бывает немного — поэтому весь ноябрь у нас специальные цены на шоу и увеличенные агентские комиссии. Соберём индивидуальное предложение под вашего клиента — напишите, и мы пришлём все условия ❤️",
+    code: "", button: "Узнать условия", url: "https://t.me/prosecco_show" },
+
+  // Новость: окно при открытии — один раз на человека, пока не прошла дата to. on: false — выключить.
+  // id меняйте для каждой новой новости, иначе тем, кто видел прошлую, окно не покажется.
+  news: { on: false, id: "forbes-570454", to: "2026-11-15", tag: "Новое в Forbes",
+    title: "Резиденты Forbes Club на мастер-классе Prosecco Show",
+    text: "Как методология Prosecco Show влияет на резидентов Forbes Club — читайте новую статью в Forbes.",
+    button: "Читать в Forbes", url: "https://www.forbes.ru/club/570454-rezidenty-forbes-club-posetili-master-klass-po-improvizacii" },
 
   // Блок «О нас» на главной
   about: {
@@ -3991,7 +3997,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   var src = "direct";
   try { if (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) src = String(tg.initDataUnsafe.start_param); } catch (e) {}
   // Прямые ссылки на разделы: ?startapp=afisha или ?startapp=afisha__метка (метка остаётся источником)
-  var START_SCREENS = { afisha: "events", quiz: "quiz", card: "card", video: "watch", contact: "contact", catalog: "catalog", edu: "edu", promo: "promo" };
+  var START_SCREENS = { afisha: "events", quiz: "quiz", card: "card", video: "watch", contact: "contact", catalog: "catalog", edu: "edu", promo: "promo", news: "news" };
   var startScreen = null;
   (function () {
     var parts = src.split("__");
@@ -4577,6 +4583,23 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
       '<button class="invite" data-promo="1" style="text-align:center"><span class="i-title disp" style="padding:0">' + esc(P.button) + "</span></button></div>");
     track("promo_view", { promo: P.title });
   }
+  function newsLive() {
+    var N = D.news; if (!N || !N.on) return false;
+    var t = new Date(); t.setHours(0, 0, 0, 0);
+    return !N.to || t <= parseDate(N.to);
+  }
+  function newsPopup() {
+    var N = D.news;
+    openSheet('<div style="text-align:center;padding:6px 4px 4px"><span class="tag">' + esc(N.tag) + '</span>' +
+      '<h2 class="disp" style="font-size:32px;margin:12px 0 8px">' + esc(N.title) + "</h2>" +
+      (N.text ? '<p style="color:var(--muted);margin:0 0 16px">' + esc(N.text) + "</p>" : "") +
+      '<button class="invite" data-news="1" style="text-align:center"><span class="i-title disp" style="padding:0">' + esc(N.button) + "</span></button></div>");
+    track("news_view", { news: N.id });
+  }
+  function newsGo() {
+    var N = D.news; track("news_click", { news: N.id });
+    closeSheet(); openUrl(N.url);
+  }
   function share() {
     var c = deckCard(state.todayCard); if (!c) return;
     track("share_card", { card: c.n });
@@ -4600,6 +4623,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     els = root.querySelectorAll("[data-cat]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { catFilter = this.getAttribute("data-cat"); haptic("light"); render(true); });
     els = root.querySelectorAll("[data-contact]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", askContact);
     els = root.querySelectorAll("[data-promo]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", promoGo);
+    els = root.querySelectorAll("[data-news]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", newsGo);
     els = root.querySelectorAll("[data-share]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", share);
     els = root.querySelectorAll("[data-zoom]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () {
       var n = +this.getAttribute("data-zoom"), c = deckCard(n);
@@ -4614,13 +4638,16 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   load(function () {
     if (!state.src) state.src = src;
     if (!state.firstSeen) state.firstSeen = new Date().toISOString();
-    var wantPromo = startScreen === "promo";
-    if (wantPromo) startScreen = null;
+    var wantPromo = startScreen === "promo", wantNews = startScreen === "news";
+    if (wantPromo || wantNews) startScreen = null;
     if (startScreen) stack = ["home", startScreen];
     var showPromo = D.promo && D.promo.on && (wantPromo || (promoLive() && state.promoSeen !== today()));
     if (showPromo) state.promoSeen = today();
     save(); track("open", startScreen ? { screen: startScreen } : (wantPromo ? { screen: "promo" } : null)); render();
+    var showNews = !showPromo && D.news && D.news.on && (wantNews || (newsLive() && state.newsSeen !== D.news.id));
+    if (showNews) { state.newsSeen = D.news.id; save(); }
     if (showPromo) setTimeout(promoPopup, 600);
+    else if (showNews) setTimeout(newsPopup, 600);
   });
 })();
 </script>
