@@ -3462,7 +3462,9 @@ window.KK_DATA = {
   deck: {
     name: "33 уровня присутствия",
     levels: [
-      { from: 1,  to: 11, name: "Уровень I",   theme: "Внимание к себе" },
+      // reward — бонус за полностью собранный уровень. Убрать бонус — удалить reward.
+      { from: 1,  to: 11, name: "Уровень I",   theme: "Внимание к себе",
+        reward: { title: "Уровень I пройден!", text: "Скидка 10% на все шоу Prosecco Show по промокоду", code: "FRIEND", short: "−10% на все шоу" } },
       { from: 12, to: 22, name: "Уровень II",  theme: "Партнёр и связи" },
       { from: 23, to: 33, name: "Уровень III", theme: "Лидерство и созидание" }
     ],
@@ -3472,6 +3474,7 @@ window.KK_DATA = {
       steps: [
         "Каждый день — одна карта и одно задание.",
         "Не пропускайте: серия 🔥 сгорит.",
+        "Соберите Уровень I (карты 1–11) — скидка 10% на все шоу 🎟",
         "Соберите все 33 карты — получите приз 🎁"
       ],
       // Показывается, когда собраны все 33 карты
@@ -3772,6 +3775,8 @@ window.KK_DATA = {
   .next { text-align: center; font-size: 13px; color: var(--muted); margin-top: 14px; }
   .bonus { margin-top: 14px; padding: 18px; border-radius: 20px; background: var(--red); }
   .bonus p { font-weight: 600; margin-bottom: 12px; }
+  .lv-rw { display: block; width: 100%; text-align: left; margin: 0 0 8px; padding: 10px 14px; border-radius: 14px; font-size: 13px; color: var(--muted); border: 1px dashed rgba(255,255,255,.25); background: none; font-family: inherit; }
+  .lv-rw.got { color: #fff; background: var(--red); border: 0; cursor: pointer; }
   .bonus .code { display: inline-block; font-family: var(--display); font-size: 26px; padding: 6px 14px; border: 2px dashed rgba(255,255,255,.8); border-radius: 12px; }
   .coll { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
   .cell { position: relative; aspect-ratio: 538 / 834; border-radius: 6px; border: 1px solid var(--line); background: #0C0C0C; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -3978,7 +3983,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
 
   // ---------- Хранилище прогресса (облако Телеграма) ----------
   var KEY = "pc_deck_v1";
-  var state = { last: "", lastOpen: "", streak: 0, got: [], todayCard: 0, opened: false, contact: false, src: "", firstSeen: "", phone: "" };
+  var state = { last: "", lastOpen: "", streak: 0, got: [], todayCard: 0, opened: false, contact: false, src: "", firstSeen: "", phone: "", rw: [] };
   var gateDeclined = false;
   var cloud = !!(tg && tg.CloudStorage && tg.isVersionAtLeast && tg.isVersionAtLeast("6.9"));
   function load(cb) {
@@ -4405,11 +4410,12 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   function cardAfter(c) {
     var Dk = D.deck, lv = levelOf(c.n), h = "";
     h += '<div class="task"><span class="tag">Задание дня · ' + esc(lv.name) + "</span><p>" + esc(c.task) + "</p></div>";
-    h += '<div class="btns"><button class="pill red" data-share="1">Поделиться картой</button>' + pill(Dk.deeper.url, Dk.deeper.button, "ghost") + "</div>";
+    h += '<div class="btns"><button class="pill red" data-share="0">Поделиться картой</button>' + pill(Dk.deeper.url, Dk.deeper.button, "ghost") + "</div>";
     if (state.streak && state.streak % Dk.streakGoal === 0) {
       var B = Dk.bonus;
       h += '<div class="bonus"><p>' + esc(B.text) + "</p>" + (B.code ? '<span class="code">' + esc(B.code) + "</span>" : pill(B.url, B.button, "sm")) + "</div>";
     }
+    if (lv.reward && levelDone(c.n) && lv.to >= c.n && lastOfLevel(c.n)) h += rewardBlock(lv);
     h += '<p class="next">Новая карта через ' + timeToNext() + "</p>";
     return h;
   }
@@ -4419,6 +4425,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     D.deck.levels.forEach(function (L) {
       var have = 0; for (var n = L.from; n <= L.to; n++) if (state.got.indexOf(n) !== -1) have++;
       var locked = have === 0 && L.from > 1 && !levelDone(L.from - 1);
+      if (L.reward) h += levelDone(L.from) ? '<button class="lv-rw got" data-reward="' + L.from + '">🎁 ' + esc(L.reward.short) + ' · промокод <b>' + esc(L.reward.code) + '</b></button>' : '<p class="lv-rw">🎁 Соберите ' + esc(L.name.replace("Уровень", "уровень")) + " и получите " + esc(L.reward.short) + "</p>";
       h += '<p class="lvl"><span>' + esc(L.name) + " · " + esc(L.theme) + "</span><span>" + (locked ? "🔒 после уровня " + esc(levelOf(L.from - 1).name.replace("Уровень ", "")) : have + " / " + (L.to - L.from + 1)) + '</span></p><div class="coll"' + (locked ? ' style="opacity:.45"' : "") + ">";
       for (var k = L.from; k <= L.to; k++) {
         var has = state.got.indexOf(k) !== -1;
@@ -4528,7 +4535,39 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     if (needContact()) { askContact(); return; }
     openToday();
     el.classList.add("open");
-    setTimeout(function () { render(true); }, 650);
+    setTimeout(function () { render(true); checkReward(); }, 650);
+  }
+
+  // ---------- Бонусы за уровни ----------
+  function lastOfLevel(n) { var L = levelOf(n), got = 0; for (var k = L.from; k <= L.to; k++) if (state.got.indexOf(k) !== -1) got++; return got === L.to - L.from + 1; }
+  function rewardBlock(L) {
+    var R = L.reward;
+    return '<div class="bonus"><p class="disp" style="font-size:22px;margin-bottom:6px">🎁 ' + esc(R.title) + '</p><p>' + esc(R.text) + '</p>' +
+      '<button class="code" data-copy="' + esc(R.code) + '" style="color:inherit;background:none;cursor:pointer">' + esc(R.code) + '</button>' +
+      '<p class="rw-hint" style="font-weight:400;font-size:13px;margin:10px 0 14px;opacity:.85">Нажмите на промокод, чтобы скопировать. Введите его при покупке билета.</p>' +
+      '<button class="pill sm" data-tab="events" style="background:#fff;color:var(--red)">Выбрать шоу</button></div>';
+  }
+  function checkReward() {
+    D.deck.levels.forEach(function (L) {
+      if (!L.reward || !levelDone(L.from)) return;
+      if (!state.rw) state.rw = [];
+      if (state.rw.indexOf(L.from) !== -1) return;
+      state.rw.push(L.from); save();
+      track("level_reward", { level: L.name, code: L.reward.code });
+      haptic("success");
+      openSheet(rewardBlock(L));
+    });
+  }
+  function copyCode() {
+    var code = this.getAttribute("data-copy"), el = this;
+    function done() { haptic("light"); var t = el.textContent; el.textContent = "Скопировано ✓"; setTimeout(function () { el.textContent = t; }, 1400); }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(code).then(done, fallback); return; }
+    } catch (e) {}
+    fallback();
+    function fallback() {
+      try { var ta = document.createElement("textarea"); ta.value = code; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); done(); } catch (e) {}
+    }
   }
 
   // ---------- Ссылки ----------
@@ -4602,12 +4641,41 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     var N = D.news; track("news_click", { news: N.id });
     closeSheet(); openUrl(N.url);
   }
-  function share() {
-    var c = deckCard(state.todayCard); if (!c) return;
-    track("share_card", { card: c.n });
+  function storyUrl(n) { try { return new URL("story-" + n + ".jpg", location.href).href; } catch (e) { return "story-" + n + ".jpg"; } }
+  function refLink() { return D.appLink.replace(/\?startapp(=.*)?$/, "") + "?startapp=ref_" + (user && user.id ? user.id : "guest"); }
+  function share(n) {
+    n = +n || state.todayCard;
+    var c = deckCard(n); if (!c) return;
+    track("share_open", { card: n });
+    var B = 'style="width:100%;margin-top:10px"';
+    openSheet('<p class="h1 disp" style="font-size:28px;margin-bottom:12px">Поделиться картой</p>' +
+      '<div style="display:flex;justify-content:center"><img src="' + storyUrl(n) + '" alt="" onerror="this.style.display=\'none\'" style="width:min(52vw,220px);aspect-ratio:9/16;object-fit:cover;border-radius:14px;box-shadow:0 0 0 1px rgba(255,255,255,.18)"></div>' +
+      '<button class="pill red" data-story="' + n + '" ' + B + '>📲 Выложить в сторис</button>' +
+      '<button class="pill ghost" data-save="' + n + '" ' + B + '>⬇️ Сохранить картинку</button>' +
+      '<button class="pill ghost" data-send="' + n + '" ' + B + '>✉️ Отправить другу</button>');
+  }
+  function shareStory() {
+    var n = +this.getAttribute("data-story"), c = deckCard(n), url = storyUrl(n);
+    track("share_story", { card: n });
+    var text = "Моя карта дня — «" + c.title + "» 🃏 Вытяни свою: " + refLink();
+    if (tg && tg.shareToStory && tg.isVersionAtLeast && tg.isVersionAtLeast("7.8")) {
+      try { tg.shareToStory(url, { text: text.slice(0, 200) }); haptic("success"); return; } catch (e) {}
+    }
+    saveStory.call({ getAttribute: function () { return n; } });
+  }
+  function saveStory() {
+    var n = +this.getAttribute("data-save") || +this.getAttribute("data-story"), url = storyUrl(n);
+    track("share_save", { card: n });
+    if (tg && tg.downloadFile && tg.isVersionAtLeast && tg.isVersionAtLeast("8.0")) {
+      try { tg.downloadFile({ url: url, file_name: "prosecco-karta-" + n + ".jpg" }); haptic("success"); return; } catch (e) {}
+    }
+    openUrl(url);
+  }
+  function sendCard() {
+    var n = +this.getAttribute("data-send"), c = deckCard(n); if (!c) return;
+    track("share_card", { card: n });
     var text = "Моя карта дня — «" + c.title + "». Задание: " + c.task + " Вытяни свою:";
-    var ref = D.appLink.replace(/\?startapp(=.*)?$/, "") + "?startapp=ref_" + (user && user.id ? user.id : "guest");
-    openUrl("https://t.me/share/url?url=" + encodeURIComponent(ref) + "&text=" + encodeURIComponent(text));
+    openUrl("https://t.me/share/url?url=" + encodeURIComponent(refLink()) + "&text=" + encodeURIComponent(text));
   }
 
   function bind(root) {
@@ -4626,15 +4694,22 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     els = root.querySelectorAll("[data-contact]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", askContact);
     els = root.querySelectorAll("[data-promo]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", promoGo);
     els = root.querySelectorAll("[data-news]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", newsGo);
-    els = root.querySelectorAll("[data-share]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", share);
+    els = root.querySelectorAll("[data-share]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { share(this.getAttribute("data-share")); });
     els = root.querySelectorAll("[data-zoom]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () {
       var n = +this.getAttribute("data-zoom"), c = deckCard(n);
       openSheet('<div style="display:flex;justify-content:center;gap:10px"><img src="' + cardBack(n) + '" alt="" style="width:min(43vw,190px);border-radius:12px;box-shadow:0 0 0 1px rgba(255,255,255,.18)"><img src="' + IMG[n] + '" alt="" style="width:min(43vw,190px);border-radius:12px;box-shadow:0 0 0 1px rgba(255,255,255,.18)"></div>' +
-        '<div class="task"><span class="tag">Задание · ' + esc(levelOf(n).name) + "</span><p>" + esc(c.task) + "</p></div>");
+        '<div class="task"><span class="tag">Задание · ' + esc(levelOf(n).name) + "</span><p>" + esc(c.task) + "</p></div>" +
+        '<button class="pill red" data-share="' + n + '" style="width:100%;margin-top:12px">Поделиться картой</button>');
     });
     els = root.querySelectorAll("[data-dl]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function (e) { track("download", { file: this.getAttribute("data-dl") }); return onDownload.call(this, e); });
     els = root.querySelectorAll("[data-invite]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { track("invite_click", { screen: stack[stack.length - 1] }); closeSheet(); quizAns = []; stack = ["home", "quiz"]; haptic("medium"); render(); });
+    els = root.querySelectorAll("[data-story]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", shareStory);
+    els = root.querySelectorAll("[data-save]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", saveStory);
+    els = root.querySelectorAll("[data-send]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", sendCard);
+    els = root.querySelectorAll("[data-copy]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", copyCode);
+    els = root.querySelectorAll("[data-reward]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { openSheet(rewardBlock(levelOf(+this.getAttribute("data-reward")))); });
     var f = root.querySelector("#flip"); if (f && !state.opened) f.addEventListener("click", reveal);
+    if (root.querySelector(".lv-rw.got")) setTimeout(checkReward, 700);
   }
 
   load(function () {
