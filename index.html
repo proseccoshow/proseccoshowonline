@@ -3242,6 +3242,10 @@ window.KK_DATA = {
 
   // ---------- ШОУ PROSECCO SHOW ----------
   // Дата в формате ГГГГ-ММ-ДД. Прошедшие скрываются сами. Пустой url — «Скоро добавим ссылку».
+  // Анонсы без даты — показываются вверху Афиши с пометкой «Скоро». Убрать — удалить строку.
+  soon: [
+    { title: "Prosecco Show в Comedy Club", tag: "Скоро · ТВ", caption: "Следите за анонсом в канале" }
+  ],
   events: [
     { date: "2026-10-25", time: "16:00", title: "Музыкальная импровизация Prosecco Show", place: "Stand Up Store", url: "https://standupstore.ru/events/muzykalnaya-improvizaciya-25-oktyabrya-2026-v-16-00/" },
     { date: "2026-10-29", time: "21:30", title: "Легендарная длинная форма импровизации Prosecco Show", place: "Stand Up Store", url: "https://standupstore.ru/events/teatralnaya-improvizaciya-29-oktyabrya-2026-v-21-30/" },
@@ -4167,6 +4171,8 @@ window.KK_DATA = {
   .sub { font-family: -apple-system, "SF Pro Display", Inter, system-ui, sans-serif !important; text-transform: none !important; font-weight: 700; font-size: 24px; letter-spacing: -.02em; }
   .rows .row { border-color: rgba(255,255,255,.08); }
   .th-h { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin: 34px 0 12px; }
+  .ev-soonc { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding: 24px 22px; border-radius: 24px; background: radial-gradient(130% 100% at 100% 0%, #5a0000 0%, #170000 55%, #0b0b0b 100%); }
+  .ev-soonc b { font-size: 30px; line-height: 1; } .ev-soonc > span:last-child { font-size: 14px; color: #A1A1A6; }
   /* Воздух */
   .wrap { padding-top: 26px; }
   .top { margin-bottom: 34px; }
@@ -4758,6 +4764,9 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
         (url ? "" : '<span class="ev-soon">Скоро добавим ссылку</span>') + "</span>" + (url ? '<span class="ev-btn">Билет</span>' : "");
       return url ? link(url, "ev", inner) : '<div class="ev">' + inner + "</div>";
     }
+    (D.soon || []).forEach(function (e) {
+      h += '<div class="ev-soonc"><span class="nx-tag">' + esc(e.tag || "Скоро") + '</span><b class="disp">' + esc(e.title) + '</b>' + (e.caption ? '<span>' + esc(e.caption) + '</span>' : "") + '</div>';
+    });
     if (!list.length) h += '<p class="empty">Новые шоу скоро появятся — следите за каналом.</p>';
     else {
       h += '<div class="list">';
