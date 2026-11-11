@@ -4539,7 +4539,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     } else {
       x += '<section class="nx-hero">';
   x += '<div class="nx-id"><img src="' + LOGO + '" alt="Prosecco Show"><span>' + esc(H.hello) + (user && user.first_name ? ", " + esc(user.first_name) : "") + '!</span></div>';
-      x += '<h1 class="nx-big disp" style="font-size:clamp(26px,8.6vw,34px);line-height:1.02;margin-top:24px">Лучшее вечернее шоу,<br><span class="nx-grad">основанное на импровизации*</span></h1>';
+      x += '<h1 class="nx-big disp" style="font-size:clamp(26px,8.6vw,34px);line-height:1.02;margin-top:24px">Лучшее вечернее шоу,<br>основанное на <span style="color:var(--red)">импровизации</span>*</h1>';
   x += '<p class="nx-who" style="margin-top:16px">Первый в России лейбл комедийной и музыкальной импровизации. Зрители рассказывают истории — артисты прямо на сцене превращают их в песни и спектакли.</p><p class="ap-note" style="font-size:11px;color:#5a5a5e;margin-top:10px">' + esc(H.claimNote) + '</p></section>';
       x += marq(RULES, "big") + marq(RULES.slice().reverse(), "big out rev");
     }
