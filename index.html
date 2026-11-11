@@ -4141,6 +4141,47 @@ window.KK_DATA = {
   @media (prefers-reduced-motion: reduce) { .nx-mq-in { animation: none; } .nx .rv { opacity: 1; transform: none; } }
   .acc i { font-style: normal; color: var(--red); font-size: 20px; }
 </style>
+<style>
+  /* ===== Единый стиль (как на главной) ===== */
+  body { font-family: -apple-system, "SF Pro Text", Inter, system-ui, sans-serif; }
+  :root { --card: #1C1C1E; --line: transparent; --muted: #86868B; }
+  .h1 { font-size: 42px; line-height: .98; letter-spacing: -.005em; }
+  .lead { font-size: 17px; line-height: 1.45; color: #86868B; letter-spacing: -.01em; margin-bottom: 24px; }
+  .tag, .tag.line, .tag.dark { background: none !important; border: 0 !important; padding: 0; border-radius: 0; color: var(--red); text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 600; }
+  .nx-tag { font-size: 12px; font-weight: 600; color: var(--red); }
+  .opt, .fcard, .prod, .ev, .ans, .feat, .about, .daily, .foot-tile, .card-box, .rules, .stat, .stats > *, .quest, .challenge, .lvl, .walls { border: 0 !important; background: #1C1C1E; border-radius: 24px; }
+  .opt { padding: 22px 20px; } .opt .o-cap { color: #86868B; }
+  .opt .ar, .opt svg { color: #86868B; }
+  .fcard.best { box-shadow: inset 0 0 0 1.5px var(--red); }
+  .fcard .fc-short, .prod p { color: #A1A1A6; }
+  .ans { border-radius: 18px; font-weight: 500; }
+  .ans:active, .opt:active { background: #2C2C2E; }
+  .chip, .cats .chip { border: 0 !important; background: #1C1C1E; color: #E5E5EA; }
+  .cats .chip.on, .chip.on { background: var(--red); color: #fff; }
+  .ev .ev-btn { background: #fff; color: #000; }
+  .contact-hero { border-radius: 28px; background: linear-gradient(160deg, #FF2D2D, #B30000) !important; border: 0 !important; }
+  .collab { border-radius: 28px; background: #F5F5F7 !important; }
+  .contact-hero .tag, .invite .tag, .s-red .tag { color: rgba(255,255,255,.8) !important; }
+  .promo { border: 0 !important; border-radius: 28px; background: radial-gradient(130% 100% at 100% 0%, #6b0000 0%, #170000 55%, #0b0b0b 100%) !important; }
+  .promo .p-tag { background: none; padding: 0; color: var(--red); text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 600; }
+  .sub { font-family: -apple-system, "SF Pro Display", Inter, system-ui, sans-serif !important; text-transform: none !important; font-weight: 700; font-size: 24px; letter-spacing: -.02em; }
+  .rows .row { border-color: rgba(255,255,255,.08); }
+  .th-h { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin: 34px 0 12px; }
+  /* Диагностика */
+  .dg-cta { display: block; width: 100%; padding: 16px; text-align: center; font-size: 16px; }
+  .dg-acc { border-top: 1px solid rgba(255,255,255,.1); }
+  .dg-row { border-bottom: 1px solid rgba(255,255,255,.1); }
+  .dg-row summary { display: flex; align-items: center; gap: 12px; padding: 16px 0; list-style: none; cursor: pointer; }
+  .dg-row summary::-webkit-details-marker { display: none; }
+  .dg-row summary b { flex: 1; font-size: 16px; font-weight: 600; }
+  .dg-row summary i { font-style: normal; color: var(--red); font-size: 22px; transition: transform .2s; }
+  .dg-row[open] summary i { transform: rotate(45deg); }
+  .dg-row .dg-n { font-size: 24px; width: 22px; color: var(--red); }
+  .dg-row p { padding: 0 0 16px 34px; font-size: 15px; line-height: 1.45; color: #A1A1A6; }
+  .dg-note { margin-top: 12px; padding: 18px 20px; border-radius: 22px; background: #1C1C1E; }
+  .dg-note b { display: block; font-size: 15px; margin-bottom: 4px; } .dg-note span { font-size: 14px; line-height: 1.45; color: #A1A1A6; }
+  .dg-note:first-of-type { margin-top: 28px; }
+</style>
 </head>
 <body>
 <main class="wrap" id="app"></main>
@@ -4667,16 +4708,15 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   function diagMode() { return diagFor || (stack.indexOf("eduSelf") !== -1 ? "self" : "team"); }
   S.diag = function () {
     var Dg = D.diag, m = diagMode();
-    var h = top(true) + '<span class="tag">' + esc(Dg.tag) + '</span><h1 class="h1 disp" style="margin-top:12px;font-size:clamp(30px,10vw,44px);overflow-wrap:anywhere">' + esc(Dg.title) + '</h1><p class="lead">' + esc(Dg.text) + "</p>";
-    h += '<div class="cats" role="tablist" style="margin-bottom:12px">' +
-      '<button class="chip' + (m === "team" ? " on" : "") + '" data-diag="team" role="tab" aria-selected="' + (m === "team") + '">С командой</button>' +
-      '<button class="chip' + (m === "self" ? " on" : "") + '" data-diag="self" role="tab" aria-selected="' + (m === "self") + '">Самостоятельно</button></div>';
-    h += '<div class="prod" style="margin-bottom:22px"><p>' + esc(Dg[m]) + "</p></div>";
-    h += '<h2 class="sub disp">' + esc(Dg.resultsTitle) + '</h2><p class="lead" style="margin-bottom:12px">' + esc(Dg.resultsLead) + '</p><div class="dg-list">';
+    var h = top(true) + '<p class="nx-tag" style="margin-top:4px">Бесплатно · 30 минут · онлайн</p><h1 class="h1 disp" style="margin-top:6px">Диагностическая сессия</h1>';
+    h += '<p class="lead">' + esc(Dg.text) + '</p>';
+    h += '<button class="pill dg-cta" data-diag-go>' + esc(Dg.button) + '</button>';
+    h += '<h2 class="th-h">Что покажут тренеры</h2><div class="dg-acc">';
     Dg.results.forEach(function (r, i) {
-      h += '<div class="dg-item"><span class="dg-n disp">' + (i + 1) + '</span><span><b>' + esc(r.t) + "</b><span>" + esc(r.d) + "</span></span></div>";
+      h += '<details class="dg-row"' + (i === 0 ? " open" : "") + '><summary><span class="dg-n disp">' + (i + 1) + '</span><b>' + esc(r.t) + '</b><i>+</i></summary><p>' + esc(r.d) + '</p></details>';
     });
-    h += '</div><div class="final"><button class="pill" data-diag-go>' + esc(Dg.button) + "</button><p>30 минут · онлайн · бесплатно</p></div>";
+    h += '</div><div class="dg-note"><b>' + (m === "self" ? "Приходите самостоятельно" : "Можно прийти и одному") + '</b><span>' + esc(m === "self" ? Dg.self : Dg.self) + '</span></div>';
+    h += '<div class="dg-note"><b>Приходите командой</b><span>' + esc(Dg.team) + '</span></div>';
     return h;
   };
   function diagSignup() {
