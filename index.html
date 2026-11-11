@@ -4041,7 +4041,7 @@ window.KK_DATA = {
   .nx-hero { padding-top: 18px; padding-bottom: 22px; }
   .nx-hi { color: var(--g); font-size: 15px; }
   .nx-big { font-size: 72px; line-height: .9; margin: 14px 0 16px; letter-spacing: -.01em; }
-  .nx-grad { background: linear-gradient(100deg, #FF2D2D 0%, #FF7A59 45%, #FFD3C4 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .nx-grad { background: linear-gradient(100deg, #FF0000 0%, #FF2A2A 55%, #FF6A6A 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .nx-lead { font-size: 17px; line-height: 1.4; color: #D1D1D6; letter-spacing: -.01em; max-width: 330px; }
   .nx-logo { display: none; }
   .nx-mq { overflow: hidden; white-space: nowrap; }
@@ -4539,7 +4539,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     } else {
       x += '<section class="nx-hero">';
   x += '<div class="nx-id"><img src="' + LOGO + '" alt="Prosecco Show"><span>' + esc(H.hello) + (user && user.first_name ? ", " + esc(user.first_name) : "") + '!</span></div>';
-      x += '<h1 class="nx-big disp" style="font-size:clamp(26px,8.6vw,34px);line-height:1.02;margin-top:24px">Лучшее вечернее шоу,<br>основанное на <span style="color:var(--red)">импровизации</span>*</h1>';
+      x += '<h1 class="nx-big disp" style="font-size:clamp(26px,8.6vw,34px);line-height:1.02;margin-top:24px">Лучшее вечернее шоу,<br><span class="nx-grad">основанное на импровизации*</span></h1>';
   x += '<p class="nx-who" style="margin-top:16px">Первый в России лейбл комедийной и музыкальной импровизации. Зрители рассказывают истории — артисты прямо на сцене превращают их в песни и спектакли.</p><p class="ap-note" style="font-size:11px;color:#5a5a5e;margin-top:10px">' + esc(H.claimNote) + '</p></section>';
       x += marq(RULES, "big") + marq(RULES.slice().reverse(), "big out rev");
     }
