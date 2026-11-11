@@ -3549,7 +3549,10 @@ window.KK_DATA = {
   invite: { button: "Пригласить Prosecco Show на мероприятие", note: "Подберём шоу за 4 вопроса" },
   // Акция: сама появляется с from по to (баннер на главной и в Афише + окно раз в день). on: false — выключить.
   // url пустой — кнопка ведёт в Афишу приложения. code — промокод (необязательно).
-  promo: { on: true, from: "2026-10-22", to: "2026-11-14", tag: "До 14 ноября · для партнёров", title: "Чёрный ноябрь 🖤",
+  // Новогодняя главная и Ёлка желаний. on: true — включить (когда ёлка готова).
+  newYear: { on: false },
+  // popup: false — без всплывающего окна при открытии, только плашка на главной.
+  promo: { on: true, popup: false, from: "2026-10-22", to: "2026-11-14", tag: "До 14 ноября · для партнёров", title: "Чёрный ноябрь 🖤",
     text: "Перед декабрём событий бывает немного — поэтому до 14 ноября у нас специальные цены на шоу и увеличенные агентские комиссии. Соберём индивидуальное предложение под вашего клиента — напишите, и мы пришлём все условия ❤️",
     code: "", button: "Узнать условия", url: "https://t.me/prosecco_show" },
 
@@ -3926,6 +3929,217 @@ window.KK_DATA = {
     .daily.new img { animation: none; }
     .invite::after { animation: none; }
   }
+
+  .slim { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 14px 10px 10px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); margin-top: 10px; text-align: left; }
+  .slim img { width: 38px; height: 58px; object-fit: cover; border-radius: 6px; }
+  .slim .s-body { flex: 1; } .slim b { display: block; font-size: 16px; } .slim .s-body span { font-size: 12px; color: var(--muted); }
+  .hscroll { display: flex; gap: 10px; overflow-x: auto; margin: 0 -20px; padding: 0 20px 4px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .hscroll::-webkit-scrollbar { display: none; }
+  .mini { flex: 0 0 62%; scroll-snap-align: start; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-height: 150px; padding: 16px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); text-align: left; }
+  .mini b { font-size: 22px; line-height: 1.05; } .mini .m-cap { font-size: 12px; color: var(--muted); margin-top: auto; }
+  .mini.red { border-color: var(--red); } .mini.white { background: var(--text); color: #000; } .mini.white .m-cap { color: #444; }
+  .sec-h { font-size: 22px; margin: 26px 0 12px; display: flex; justify-content: space-between; align-items: baseline; }
+  .sec-h small { font-family: var(--body, inherit); font-size: 13px; color: var(--muted); text-transform: none; }
+  .hero-br { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .hero-br .branch { min-height: 120px; }
+  .slide { flex: 0 0 100%; scroll-snap-align: center; }
+  .slide .promo, .slide .invite { margin: 0; height: 100%; }
+  .dots { display: flex; justify-content: center; gap: 6px; margin: 10px 0 0; } .dots i { width: 6px; height: 6px; border-radius: 3px; background: #444; } .dots i.on { width: 18px; background: var(--red); }
+  .today { position: relative; display: block; width: 100%; border-radius: 26px; overflow: hidden; border: 1px solid var(--line); text-align: left; }
+  .today img { display: block; width: 100%; height: 300px; object-fit: cover; }
+  .today .t-over { position: absolute; inset: auto 0 0 0; padding: 60px 18px 18px; background: linear-gradient(transparent, rgba(0,0,0,.92)); }
+  .today .t-over b { display: block; font-size: 34px; margin: 8px 0 4px; } .today .t-over span.cap { font-size: 13px; color: #ccc; }
+  .grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tile { display: flex; flex-direction: column; justify-content: space-between; gap: 18px; min-height: 104px; padding: 14px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); text-align: left; }
+  .tile svg { width: 26px; height: 26px; stroke: var(--red); fill: none; stroke-width: 1.8; } .tile b { font-size: 18px; line-height: 1.05; }
+  .tile.red { background: var(--red); border-color: var(--red); } .tile.red svg { stroke: #fff; }
+  .acc { margin-top: 10px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); padding: 16px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+  .teac { margin-top: 10px; display: flex; gap: 14px; padding: 12px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); }
+  .teac img { width: 96px; height: 122px; object-fit: cover; border-radius: 12px; flex: 0 0 auto; }
+  .teac .tc-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .teac .tag { align-self: flex-start; }
+  .teac b { font-size: 20px; line-height: 1.05; }
+  .teac .tc-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+  .lane { align-items: stretch; }
+  .ln { flex: 0 0 84%; scroll-snap-align: start; display: flex; }
+  .ln > * { margin: 0 !important; width: 100%; }
+  .ln .promo .p-title { font-size: 24px; } .ln .promo .p-text { font-size: 13px; }
+  .ln .feat.dg { border-color: var(--red); text-align: left; }
+  .about { padding: 16px; } .about > p { font-size: 13px; }
+  .about img, .about svg { max-height: 64px; width: auto; }
+  .brand { border-radius: 22px; overflow: hidden; background: var(--card); border: 1px solid var(--line); }
+  .br-top { padding: 18px; background: var(--text); color: #000; }
+  .br-top h3 { font-size: 26px; line-height: 1.05; margin-bottom: 6px; } .br-top p { font-size: 13px; color: #333; margin-bottom: 12px; }
+  .br-top .pill { background: #000; color: #fff; }
+  .br-tea { display: flex; gap: 14px; padding: 16px 16px 6px; }
+  .br-tea img { width: 92px; height: 116px; object-fit: cover; border-radius: 12px; flex: 0 0 auto; }
+  .br-tb { min-width: 0; } .br-tb .tag { font-size: 10px; } .br-tb b { display: block; font-size: 19px; line-height: 1.05; margin: 8px 0 4px; } .br-tb p { font-size: 12px; color: var(--muted); }
+  .ap { --gap: 64px; --r: 28px; --c2: #1C1C1E; --g: #8E8E93; font-family: -apple-system, "SF Pro Text", Inter, system-ui, sans-serif; }
+  .ap-head { padding: 18px 0 8px; }
+  .ap-hi { font-size: 15px; color: var(--g); margin-bottom: 18px; }
+  .ap-logo { width: 190px; height: auto; display: block; }
+  .ap-claim { font-size: 19px; line-height: 1.35; color: #fff; margin-top: 16px; font-weight: 500; letter-spacing: -.01em; max-width: 300px; }
+  .ap-note { font-size: 11px; color: #5a5a5e; margin-top: 8px; }
+  .ap-sec { margin-top: var(--gap); }
+  .ap-h { font-size: 28px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 18px; }
+  .ap-eb { display: block; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.7); }
+  .ap-eb.red { color: var(--red); }
+  .ap-t { display: block; font-size: 15px; line-height: 1.4; color: var(--g); }
+  .ap-rail { display: flex; gap: 14px; overflow-x: auto; margin: 0 -20px; padding: 0 20px 6px; scroll-padding-left: 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .ap-rail::-webkit-scrollbar { display: none; }
+  .ap-card { flex: 0 0 80%; scroll-snap-align: start; display: flex; flex-direction: column; gap: 12px; min-height: 330px; padding: 26px 24px; border-radius: var(--r); text-align: left; color: #fff; border: 0; }
+  .ap-card b { font-size: 30px; line-height: 1.02; }
+  .ap-card .ap-t { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .ap-card .ap-more { margin-top: auto; font-size: 15px; font-weight: 600; }
+  .ap-card.dark { background: radial-gradient(120% 90% at 100% 0%, #5a0000 0%, #120000 55%, #0a0a0a 100%); }
+  .ap-card.red { background: var(--red); } .ap-card.red .ap-t { color: rgba(255,255,255,.85); }
+  .ap-card.gray { background: var(--c2); }
+  .ap-card.light, .ap-tile.light { background: #F5F5F7; color: #000; } .ap-card.light .ap-t, .ap-tile.light span { color: #6e6e73; } .ap-card.light .ap-more { color: var(--red); }
+  .ap-two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .ap-tile { display: flex; flex-direction: column; gap: 10px; min-height: 210px; padding: 22px 20px; border-radius: var(--r); text-align: left; color: #fff; border: 0; }
+  .ap-tile.red { background: var(--red); } .ap-tile b { font-size: 34px; } .ap-tile span { font-size: 14px; line-height: 1.35; color: rgba(255,255,255,.85); } .ap-tile i { font-style: normal; font-size: 24px; margin-top: auto; }
+  .ap-daily { display: flex; align-items: center; gap: 18px; width: 100%; margin-top: 14px; padding: 18px; border-radius: var(--r); background: var(--c2); color: #fff; text-align: left; border: 0; }
+  .ap-daily img { width: 64px; height: 98px; object-fit: cover; border-radius: 10px; }
+  .ap-daily > span { flex: 1; display: flex; flex-direction: column; gap: 6px; } .ap-daily b { font-size: 26px; } .ap-daily .ap-t { font-size: 13px; } .ap-daily i { font-style: normal; color: var(--g); font-size: 24px; }
+  .ap-about { font-size: 19px; line-height: 1.45; color: #E5E5EA; letter-spacing: -.01em; }
+  .ap-aw { display: flex; justify-content: space-between; margin: 36px 0 32px; } .ap-aw img { width: 30%; height: auto; opacity: .9; }
+  .ap-small { font-size: 13px; color: var(--g); margin-bottom: 10px; }
+  .ap-press { display: flex; gap: 24px; } .ap-link { font-size: 17px; font-weight: 600; color: #fff; }
+  .ap-collab { padding: 30px 26px; border-radius: var(--r); background: #F5F5F7; color: #000; }
+  .ap-collab b { font-size: 34px; display: block; } .ap-collab p { font-size: 16px; line-height: 1.45; color: #6e6e73; margin: 12px 0 22px; }
+  .ap-btn { display: inline-block; padding: 12px 20px; border-radius: 999px; background: #fff; color: #000; font-size: 15px; font-weight: 600; }
+  .ap-btn.dark { background: #000; color: #fff; }
+  .ap-tea { margin-top: 14px; border-radius: var(--r); background: var(--c2); overflow: hidden; }
+  .ap-tea > img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: center 35%; }
+  .ap-tea-in { padding: 26px 22px 24px; display: flex; flex-direction: column; gap: 10px; } .ap-tea-in > b { font-size: 30px; line-height: 1.02; }
+  .ap-tea .ap-two { margin-top: 14px; }
+  .ap-prod { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 18px 16px; border-radius: 20px; background: #2C2C2E; }
+  .ap-prod b { font-size: 22px; } .ap-prod span { font-size: 13px; color: var(--g); margin-bottom: 12px; }
+  .ap .foot { margin-top: var(--gap); } .ap .foot-tile { border: 0; background: var(--c2); border-radius: 22px; padding: 20px; }
+  .ap-card.sm { flex-basis: 66%; min-height: 280px; }
+  .ap-card.sm b { font-size: 28px; }
+  .ap-card.img { background-size: cover; background-position: center; }
+  .ap-card.light .ap-btn.dark, .ap-card .ap-btn { margin-top: auto; align-self: flex-start; }
+  .ap-aw2 { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; } .ap-aw2 img { width: 74px; height: auto; }
+  .ap-aw2 { flex-direction: row; flex-wrap: nowrap; justify-content: space-between; gap: 6px; margin-top: auto; margin-bottom: auto; } .ap-aw2 img { width: 31%; }
+  .ap-card.sm .ap-t { -webkit-line-clamp: unset; display: block; }
+  .ap-press2 { display: flex; flex-direction: column; gap: 18px; margin-top: auto; } .ap-press2 .ap-link { font-size: 26px; font-family: var(--display); text-transform: uppercase; }
+  .ap-card.tea { padding: 0; overflow: hidden; background: var(--c2); }
+  .ap-card.tea img { width: 100%; height: 150px; object-fit: cover; object-position: center 30%; }
+  .ap-tb { display: flex; flex-direction: column; gap: 8px; padding: 18px 20px 20px; flex: 1; }
+  .ap-sub { font-size: 15px; color: var(--g); margin: -10px 0 18px; }
+  .ap-rail.shop .ap-prod2 { flex: 0 0 46%; scroll-snap-align: start; display: flex; flex-direction: column; gap: 6px; text-align: left; color: #fff; }
+  .ap-pimg { display: block; aspect-ratio: 1; border-radius: 22px; overflow: hidden; background: var(--c2); margin-bottom: 8px; }
+  .ap-pimg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ap-pimg.bag { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--red); }
+  .ap-pimg.bag b { font-size: 40px; } .ap-pimg.bag small { font-size: 13px; opacity: .8; letter-spacing: .2em; text-transform: uppercase; }
+  .ap-prod2 > b { font-size: 20px; line-height: 1.05; } .ap-prod2 .ap-t { font-size: 13px; }
+  .ap-buy { font-size: 14px; font-weight: 600; color: var(--red); margin-top: 4px; }
+
+  .nx { --g: #86868B; --c2: #1C1C1E; margin: 0 -20px; overflow: hidden; font-family: -apple-system, "SF Pro Display", Inter, system-ui, sans-serif; }
+  .nx > section, .nx > p, .nx > .foot { padding-left: 20px; padding-right: 20px; }
+  .nx-hero { padding-top: 18px; padding-bottom: 22px; }
+  .nx-hi { color: var(--g); font-size: 15px; }
+  .nx-big { font-size: 72px; line-height: .9; margin: 14px 0 16px; letter-spacing: -.01em; }
+  .nx-grad { background: linear-gradient(100deg, #FF2D2D 0%, #FF7A59 45%, #FFD3C4 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .nx-lead { font-size: 17px; line-height: 1.4; color: #D1D1D6; letter-spacing: -.01em; max-width: 330px; }
+  .nx-logo { display: none; }
+  .nx-mq { overflow: hidden; white-space: nowrap; }
+  .nx-mq-in { display: inline-flex; align-items: center; animation: nxm 28s linear infinite; }
+  .nx-mq.rev .nx-mq-in { animation-direction: reverse; }
+  .nx-mq span { padding: 0 14px; } .nx-mq i { font-style: normal; color: var(--red); font-size: .5em; }
+  .nx-mq.big { font-family: var(--display); font-weight: 700; text-transform: uppercase; font-size: 38px; line-height: 1.15; }
+  .nx-mq.out { color: transparent; -webkit-text-stroke: 1.2px rgba(255,255,255,.45); }
+  .nx-mq.names { font-size: 22px; font-weight: 600; letter-spacing: -.01em; padding: 4px 0; }
+  .nx-mq.names .nx-mq-in { animation-duration: 60s; } .nx-mq.dim { color: #636366; }
+  @keyframes nxm { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .nx-sec { margin-top: 56px; }
+  .nx-eb { font-size: 13px; font-weight: 600; color: var(--red); letter-spacing: .02em; margin-bottom: 8px; }
+  .nx-h { font-size: 28px; line-height: 1.1; font-weight: 700; letter-spacing: -.025em; margin-bottom: 18px; }
+  .nx-tag { font-size: 12px; font-weight: 600; color: var(--red); } .nx-tag.w { color: rgba(255,255,255,.8); }
+  .nx-t { font-size: 15px; line-height: 1.4; color: var(--g); }
+  .nx-stack { padding-bottom: 10px; }
+  .nx-si { position: sticky; margin-bottom: 12px; }
+  .nx-sc { display: flex; flex-direction: column; gap: 12px; width: 100%; min-height: 230px; padding: 24px 22px; border-radius: 28px; text-align: left; color: #fff; border: 0; box-shadow: 0 -10px 40px rgba(0,0,0,.6); }
+  .nx-sc .nx-t { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .nx-sc b { font-size: 30px; line-height: 1; } .nx-sc .nx-go { margin-top: auto; font-weight: 600; font-size: 16px; }
+  .s-dark { background: radial-gradient(130% 100% at 100% 0%, #6b0000 0%, #170000 55%, #0b0b0b 100%); }
+  .s-red { background: var(--red); } .s-red .nx-t { color: rgba(255,255,255,.85); }
+  .s-gray { background: var(--c2); }
+  .s-light { background: #F5F5F7; color: #000; } .s-light .nx-t { color: #6E6E73; } .s-light .nx-go { color: var(--red); }
+  .nx-bento { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 150px; gap: 12px; }
+  .nx-b { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 18px; border-radius: 26px; text-align: left; color: #fff; border: 0; overflow: hidden; background-size: cover; background-position: center; }
+  .nx-b b { font-size: 34px; line-height: 1; } .nx-ar { position: absolute; right: 16px; top: 14px; font-size: 20px; }
+  .b-show { grid-row: span 2; background: linear-gradient(160deg, #FF2D2D, #B30000); } .b-show b { font-size: 46px; margin-top: auto; } .b-show .nx-t { color: rgba(255,255,255,.85); font-size: 14px; }
+  .b-edu { background: #F5F5F7; color: #000; } .b-edu b { margin-top: auto; font-size: 28px; }
+  .b-card { justify-content: flex-end; } .b-card b { font-size: 26px; }
+  .b-wide { grid-column: span 2; flex-direction: row; align-items: center; justify-content: space-between; background: var(--c2); } .b-wide .nx-ar { position: static; font-size: 26px; }
+  .nx-bento { grid-template-rows: 128px 128px 84px; }
+  .nx-nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .nx-nums > div { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid rgba(255,255,255,.14); padding-top: 14px; }
+  .nx-nums b { font-size: 44px; line-height: 1; } .nx-nums span { font-size: 12px; color: var(--g); line-height: 1.35; }
+  .nx-names { margin-top: 26px; }
+  .ny { position: relative; }
+  .nx-ps { font-family: -apple-system, Inter, system-ui, sans-serif; padding-bottom: 10px; }
+  .nx-ps img { width: 100%; border-radius: 22px; display: block; margin-bottom: 18px; }
+  .nx-ps-tag { font-size: 12px; font-weight: 600; color: var(--red); } .nx-ps h2 { font-size: 40px; margin: 6px 0 4px; }
+  .nx-ps-lead { font-size: 20px; font-weight: 600; margin-bottom: 14px; letter-spacing: -.01em; }
+  .nx-ps p { font-size: 15px; line-height: 1.5; color: #D1D1D6; margin-bottom: 10px; }
+  .nx-ps-rule { margin: 16px 0 12px; padding: 14px 16px; border-radius: 16px; border: 1px solid var(--red); font-weight: 600; font-size: 15px; }
+  .nx-ps-meta { color: #8E8E93 !important; font-size: 13px !important; } .nx-ps .pill { display: block; width: 100%; text-align: center; margin-top: 10px; }
+  .nx-club { margin: 14px 20px 0; padding: 24px 22px; border-radius: 28px; background: #FFFFFF; color: #0B1B3F; }
+  .nx-cl-top { display: flex; flex-direction: column; gap: 6px; }
+  .nx-cl-tag { align-self: flex-start; font-size: 12px; font-weight: 700; color: #fff; background: #1F5BFF; padding: 4px 10px; border-radius: 999px; }
+  .nx-cl-top b { font-size: 46px; line-height: 1; color: #1F5BFF; } .nx-cl-sub { font-size: 15px; color: #5A6B8C; line-height: 1.35; }
+  .nx-cl-list { list-style: none; margin: 18px 0 20px; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .nx-cl-list li { display: flex; gap: 14px; align-items: flex-start; }
+  .nx-cl-list i { flex: 0 0 34px; height: 34px; border-radius: 10px; background: #EEF4FF; color: #1F5BFF; font-style: normal; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .nx-cl-list span { font-size: 13px; color: #5A6B8C; line-height: 1.35; } .nx-cl-list b { display: block; font-size: 15px; color: #0B1B3F; margin-bottom: 2px; }
+  .nx-cl-btn { display: block; text-align: center; padding: 15px; border-radius: 999px; background: #1F5BFF; color: #fff; font-weight: 600; font-size: 16px; }
+  .nx-id { display: flex; align-items: center; justify-content: space-between; } .nx-id img { width: 150px; height: auto; } .nx-id span { font-size: 14px; color: var(--g); }
+  .nx-who { margin-top: 14px; font-size: 15px; line-height: 1.4; color: #D1D1D6; letter-spacing: -.01em; }
+  .nx-snow { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(1.5px 1.5px at 20% 30%, #fff8, transparent), radial-gradient(1px 1px at 70% 20%, #fff6, transparent), radial-gradient(2px 2px at 85% 60%, #fff5, transparent), radial-gradient(1px 1px at 40% 80%, #fff7, transparent), radial-gradient(1.5px 1.5px at 10% 70%, #fff5, transparent), radial-gradient(1px 1px at 55% 50%, #fff6, transparent); background-size: 180px 180px; animation: nxsnow 12s linear infinite; opacity: .8; }
+  @keyframes nxsnow { from { background-position: 0 0; } to { background-position: 40px 360px; } }
+  .nx-xmas { position: relative; border-radius: 30px; overflow: hidden; background: radial-gradient(120% 80% at 50% 0%, #3a0000 0%, #120000 50%, #0b0b0b 100%); padding: 22px 22px 24px; }
+  .nx-tree { display: block; width: 74%; margin: 0 auto 6px; filter: drop-shadow(0 0 30px rgba(255,0,0,.35)); }
+  .nx-tree .b-r { fill: #FF2D2D; } .nx-tree .b-w { fill: #F5F5F7; } .nx-tree .b-p { fill: #FF9A80; }
+  .nx-tree circle { animation: nxtw 3s ease-in-out infinite; } .nx-tree circle:nth-child(3n) { animation-delay: 1s; } .nx-tree circle:nth-child(3n+1) { animation-delay: 2s; }
+  @keyframes nxtw { 50% { opacity: .55; } }
+  .nx-xm-b { display: flex; flex-direction: column; gap: 10px; }
+  .nx-xm-b > b { font-size: 34px; line-height: 1; }
+  .nx-xm-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 6px 0 4px; }
+  .nx-xm-stats div { display: flex; flex-direction: column; gap: 2px; border-top: 1px solid rgba(255,255,255,.15); padding-top: 10px; }
+  .nx-xm-stats b { font-size: 36px; } .nx-xm-stats span { font-size: 12px; color: var(--g); }
+  .nx-pill.big { margin-top: 8px; align-self: stretch; text-align: center; padding: 16px; font-size: 16px; border: 0; }
+  .nx-mq.wishes { margin-top: 14px; font-size: 15px; font-weight: 500; color: #C7C7CC; font-style: italic; }
+  .nx-first { margin-top: 34px; }
+  .nx-day { display: flex; width: 100%; gap: 0; border-radius: 28px; overflow: hidden; background: var(--c2); color: #fff; text-align: left; border: 0; }
+  .nx-day-img { flex: 0 0 40%; min-height: 220px; background-size: cover; background-position: center; }
+  .nx-day-b { display: flex; flex-direction: column; gap: 8px; padding: 20px 18px; }
+  .nx-day-b b { font-size: 34px; line-height: 1; } .nx-day-b .nx-t { font-size: 14px; }
+  .nx-pill { margin-top: auto; align-self: flex-start; padding: 10px 16px; border-radius: 999px; background: var(--red); color: #fff; font-size: 14px; font-weight: 600; }
+  .b-diag { background: linear-gradient(160deg, #2c2c2e, #1c1c1e); } .b-diag b { margin-top: auto; font-size: 22px; }
+  .nx-sec > .s-red { min-height: 0; } .nx-sec > .s-red b { font-size: 28px; }
+  .nx-strip { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 10px; padding: 14px 16px; border-radius: 18px; background: var(--c2); color: #fff; text-align: left; border: 0; }
+  .nx-strip > span:nth-child(2) { flex: 1; display: flex; flex-direction: column; gap: 2px; } .nx-strip b { font-size: 15px; } .nx-strip span span { font-size: 12px; color: var(--g); }
+  .nx-strip i { font-style: normal; color: var(--red); } .nx-dot { width: 8px; height: 8px; border-radius: 4px; background: var(--red); box-shadow: 0 0 0 4px rgba(255,0,0,.2); }
+  .nx-shelf { display: flex; gap: 14px; overflow-x: auto; margin: 0 -20px; padding: 0 20px 4px; scroll-padding-left: 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .nx-shelf::-webkit-scrollbar { display: none; }
+  .nx-p { flex: 0 0 40%; scroll-snap-align: start; display: flex; flex-direction: column; gap: 4px; text-align: left; color: #fff; }
+  .nx-pi { display: block; aspect-ratio: 1; border-radius: 22px; overflow: hidden; background: var(--c2); margin-bottom: 10px; }
+  .nx-pi img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .nx-pi.bag { display: flex; align-items: center; justify-content: center; background: linear-gradient(160deg, #FF2D2D, #8a0000); } .nx-pi.bag b { font-size: 34px; }
+  .nx-p > b { font-size: 16px; font-weight: 600; } .nx-p .nx-t { font-size: 13px; } .nx-buy { font-size: 14px; color: var(--red); font-weight: 600; margin-top: 2px; }
+  .nx-aw { display: flex; justify-content: space-between; } .nx-aw img { width: 30%; }
+  .nx-press { margin-top: 22px; text-align: center; font-size: 14px; color: var(--g); } .nx-press a { color: #fff; font-weight: 600; margin-left: 10px; }
+  .nx-collab { text-align: left; padding-bottom: 10px; }
+  .nx-huge { font-size: 54px; line-height: .92; margin: 4px 0 14px; }
+  .nx-btn { display: inline-block; margin-top: 18px; padding: 15px 24px; border-radius: 999px; background: #fff; color: #000; font-weight: 600; font-size: 16px; }
+  .nx .foot { margin-top: 44px; } .nx .foot-tile { border: 0; background: var(--c2); border-radius: 22px; }
+  .nx .rv { opacity: 0; transform: translateY(40px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+  .nx .rv.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .nx-mq-in { animation: none; } .nx .rv { opacity: 1; transform: none; } }
+  .acc i { font-style: normal; color: var(--red); font-size: 20px; }
 </style>
 </head>
 <body>
@@ -4190,49 +4404,134 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   // ---------- Экраны ----------
   var S = {};
 
+
+  window.NX_PROD = {
+    bag: { img: "merch-bag.jpg", tag: "Ручная работа · PRSCC", title: "Сумка PRSCC",
+      lead: "Шутки не главное — связи решают",
+      text: ["Вязаная сумочка для телефона на длинном шнуре: руки свободны, всё нужное — при себе.",
+             "На нашивке — правило импровизации №4. Носите его с собой: лучшие истории случаются там, где люди замечают друг друга."],
+      rule: "Цена — 3 500 ₽. Заказ напрямую у мастера @lishapti4kina",
+      meta: "Каждая сумка вяжется вручную",
+      button: "Заказать у @lishapti4kina",
+      url: "https://t.me/lishapti4kina?text=" + encodeURIComponent("Здравствуйте! Увидел(а) сумку PRSCC в приложении Prosecco Show — хочу купить 🖤") },
+    shu: { img: "merch-shu.jpg", tag: "Лимитированное издание · Чайная Линия", title: "Prosecco Шу",
+      lead: "Чай для смелого «да»",
+      text: ["Плотный шу пуэр с глубоким вкусом тёмного шоколада, сухофруктов и тёплого дерева. Собран с деревьев возрастом 80–150 лет.",
+             "Согревает с первого глотка и бодрит мягко, без кофейной резкости. Утром перед важной встречей, днём вместо третьего капучино, вечером перед выходом на сцену.",
+             "Скажите «да» всему, что принесёт день, — и добавьте своё. Новая идея, неожиданный поворот, смелый шаг: с этим чаем всё становится поводом сыграть."],
+      rule: "Правило №1 «Да, и…» — в одной чашке",
+      meta: "Шу пуэр · 200 г", url: "https://chaline.ru/catalog/chay/puer_i_chyernyy_chay/pressovannyy_shu_puer/173417/?oid=223008" },
+    shen: { img: "merch-shen.jpg", tag: "Лимитированное издание · Чайная Линия", title: "Prosecco Шен",
+      lead: "Чай для чистой головы",
+      text: ["Свежий шен пуэр с мягкой цветочной сладостью и долгим медовым послевкусием. Собран с деревьев возрастом 80–150 лет.",
+             "Заварите, сделайте первый глоток — и шум в голове стихает. Плечи опускаются, мысли становятся лёгкими, а внимание возвращается туда, где ему и место: в «здесь и сейчас».",
+             "Как на сцене импровизации: никакого внутреннего критика, только вы и этот момент."],
+      rule: "Правило №5 «Чистая голова» — в одной чашке",
+      meta: "Шен пуэр · 200 г", url: "https://chaline.ru/catalog/chay/puer_i_chyernyy_chay/pressovannyy_shen_puer/173446/" }
+  };
+  function nxProd(id) {
+    var P = window.NX_PROD[id];
+    return '<div class="nx-ps"><img src="' + wallUrl(P.img) + '" alt=""><span class="nx-ps-tag">' + esc(P.tag) + '</span><h2 class="disp">' + esc(P.title) + '</h2><p class="nx-ps-lead">' + esc(P.lead) + '</p>' +
+      P.text.map(function (t) { return "<p>" + esc(t) + "</p>"; }).join("") + '<div class="nx-ps-rule">' + esc(P.rule).replace("@lishapti4kina", '<a href="' + esc(P.url) + '" data-url="' + esc(P.url) + '" style="color:var(--red)">@lishapti4kina</a>') + '</div><p class="nx-ps-meta">' + esc(P.meta) + '</p>' + pill(P.url, P.button || "Купить на Чайной Линии") + '</div>';
+  }
   S.home = function () {
     ensureToday();
     var H = D.home, h = "";
     h += '<p class="hello">' + esc(H.hello) + (user && user.first_name ? ", " + esc(user.first_name) : "") + "!</p>";
-    h += '<div class="claim"><span class="disp">' + esc(H.claimLeft) + '</span><span class="mid"><img class="logo-mid" src="' + LOGO + '" alt="Prosecco Show"></span><span class="disp">' + esc(H.claimRight) + '</span></div><p class="claim-note">' + esc(H.claimNote) + "</p>";
-
-    if (promoLive()) h += promoCard();
-    var I = D.invite;
-    if (I) h += '<button class="invite" data-invite="1"><span class="i-title disp">' + esc(I.button) + '</span><span class="i-cap">' + esc(I.note) + '</span><span class="i-ar" aria-hidden="true">→</span></button>';
-
+    h += '<div class="claim"><span class="disp">' + esc(H.claimLeft) + '</span><span class="mid"><img class="logo-mid" src="' + LOGO + '" alt="Prosecco Show"></span><span class="disp">' + esc(H.claimRight) + '</span></div><p class="claim-note">' + esc(H.claimNote) + '</p>';
     var c = deckCard(state.todayCard);
-    if (state.opened && c) {
-      h += '<button class="daily" data-go="card"><img src="' + cardBack(state.todayCard) + '" alt=""><span class="d-body"><span class="tag line">День ' + challengeDay() + ' из 33</span>' +
-        '<span class="d-title disp" style="display:block">' + esc(c.title) + '</span><span class="d-cap">🔥 ' + liveStreak() + " " + plural(liveStreak(), "день", "дня", "дней") + " подряд · новая через " + timeToNext() + "</span></span>" + AR + "</button>";
+    function slimDaily() {
+      return '<button class="slim" data-go="card"><img src="' + cardBack(state.todayCard) + '" alt=""><span class="s-body"><b>Карта дня</b><span>День ' + challengeDay() + ' из 33 · откройте задание</span></span>' + AR + '</button>';
+    }
+    function mini(tag, title, cap, go, cls) {
+      return '<button class="mini ' + (cls || "") + '" data-go="' + go + '"><span class="tag">' + tag + '</span><b class="disp">' + title + '</b><span class="m-cap">' + cap + '</span></button>';
+    }
+
+    var P = D.promo, I = D.invite, F = D.featured, A = D.about, K = D.collab, T = D.tea, C = D.contact;
+    var RULES = ["Да, и…", "Сделай партнёра звездой", "Ошибки — это подарки", "Шутки не главное, связи решают", "Чистая голова"];
+    function marq(items, cls) { var one = items.map(function (t) { return "<span>" + esc(t) + "</span><i>✦</i>"; }).join(""); return '<div class="nx-mq ' + (cls || "") + '"><div class="nx-mq-in">' + one + one + "</div></div>"; }
+    var x = '<div class="nx">';
+    // HERO: обычный или новогодний (D.newYear.on)
+    var NY = !!(D.newYear && D.newYear.on);
+    if (NY) {
+      // HERO — новогодний
+      var dl = Math.max(0, Math.ceil((new Date(2026, 11, 25) - new Date(2026, 10, 15)) / 864e5));
+      x += '<section class="nx-hero ny"><div class="nx-snow"></div>';
+      x += '<div class="nx-id"><img src="' + LOGO + '" alt="Prosecco Show"><span>' + esc(H.hello) + (user && user.first_name ? ", " + esc(user.first_name) : "") + '!</span></div>';
+      x += '<p class="nx-who">Первый в России лейбл комедийной и музыкальной импровизации. Зрители рассказывают истории — артисты прямо на сцене превращают их в песни и спектакли.</p>';
+      x += '<p class="nx-eb" style="margin-top:22px">Новый год в Prosecco</p><h1 class="nx-big disp" style="font-size:40px;margin-top:4px">Импровизация&nbsp;—<br><span class="nx-grad">это волшебство.</span></h1>';
+      x += '</section>';
+      x += marq(["Prosecco Show исполняет желания", "Загадайте своё", "Итоги 25 декабря"], "big out");
+      // ЁЛКА
+      var balls = [[50,22,"r"],[40,38,"w"],[61,40,"p"],[31,55,"r"],[50,52,"w"],[68,58,"r"],[24,72,"w"],[42,70,"p"],[58,73,"r"],[76,76,"w"],[34,86,"r"],[66,88,"p"]];
+      var tree = '<svg class="nx-tree" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6 L86 94 L14 94 Z" fill="url(#tg)"/><defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a0000"/><stop offset="1" stop-color="#140000"/></linearGradient></defs>';
+      for (var li = 0; li < 5; li++) { var yy = 24 + li * 15, w = 6 + li * 7; tree += '<path d="M' + (50 - w) + ' ' + yy + ' Q50 ' + (yy + 6) + ' ' + (50 + w) + ' ' + (yy - 2) + '" stroke="rgba(255,255,255,.18)" stroke-width=".5" fill="none"/>'; }
+      balls.forEach(function (bb) { tree += '<circle cx="' + bb[0] + '" cy="' + bb[1] + '" r="3.6" class="b-' + bb[2] + '"/>'; });
+      tree += '<path d="M50 1.5 l1.4 3 3.2.3-2.4 2.1.7 3.1L50 8.4 47.1 10l.7-3.1-2.4-2.1 3.2-.3z" fill="#FF2D2D"/></svg>';
+      x += '<section class="nx-sec nx-first"><div class="nx-xmas rv">' + tree;
+      x += '<div class="nx-xm-b"><span class="nx-tag">Ёлка желаний · до 25 декабря</span><b class="disp">Повесьте шарик и загадайте желание</b><span class="nx-t" style="color:#fff">Одно желание мы исполним 25 декабря.</span>';
+      x += '<span class="nx-t">Ваше фото в фирменном шарике и новогоднее желание. За каждый шарик — подарок: скидки до 50% на шоу и Арт Лаб, а кому-то — бесплатный билет.</span>';
+      x += '<div class="nx-xm-stats"><div><b class="disp" data-count="128">0</b><span>шариков уже на ёлке</span></div><div><b class="disp">' + dl + '</b><span>дней до исполнения</span></div></div>';
+      x += '<button class="nx-pill big" data-go="home">Повесить шарик 🎄</button></div></div>';
+      x += marq(["«Спеть с Prosecco на сцене»", "«Чтобы мама посмеялась до слёз»", "«Сделать предложение на шоу»", "«Выйти импровизировать с командой»", "«Билеты для всей семьи»"], "names wishes") + '</section>';
     } else {
-      h += '<button class="daily new" data-go="card"><img src="' + cardBack(state.todayCard) + '" alt=""><span class="d-body"><span class="tag">Челлендж 33 дня</span>' +
-        '<span class="d-title disp" style="display:block">Карта дня</span><span class="d-cap">День ' + challengeDay() + ' из 33 · откройте карту и получите задание</span></span>' + AR + "</button>";
+      x += '<section class="nx-hero">';
+  x += '<div class="nx-id"><img src="' + LOGO + '" alt="Prosecco Show"><span>' + esc(H.hello) + (user && user.first_name ? ", " + esc(user.first_name) : "") + '!</span></div>';
+  x += '<p class="nx-who">Первый в России лейбл комедийной и музыкальной импровизации. Зрители рассказывают истории — артисты прямо на сцене превращают их в песни и спектакли.</p>';
+      x += '<h1 class="nx-big disp" style="font-size:64px;margin-top:22px">Здесь<br>и <span class="nx-grad">сейчас.</span></h1></section>';
+      x += marq(RULES, "big") + marq(RULES.slice().reverse(), "big out rev");
     }
-
-    h += '<h2 class="q disp">' + esc(H.question) + "</h2>";
-    h += '<div class="branches">';
-    h += '<button class="branch ent" data-go="ent"><span><span class="b-title disp" style="display:block">Шоу Prosecco Show</span><span class="b-cap" style="display:block">Сходить на шоу или заказать его на своё событие</span></span><span class="b-ar">→</span></button>';
-    h += '<button class="branch edu" data-go="edu"><span><span class="b-title disp" style="display:block">Обучение</span><span class="b-cap" style="display:block">Импровизация как навык — для себя и для команды</span></span><span class="b-ar">→</span></button>';
-    h += "</div>";
-
-
-    var F = D.featured;
-    if (F) {
-      h += link(F.url, "feat", '<span class="f-row"><span class="tag">' + esc(F.tag) + '</span><span class="muted">↗</span></span><span class="f-title disp" style="display:block">' + esc(F.title) + "</span><p>" + esc(F.text) + "</p>");
-    }
-    h += aboutBlock();
-    h += collabBlock();
-    var T = D.tea;
-    if (T) {
-      h += '<section class="tea"><img class="tea-photo" src="' + window.KK_TEA.photo + '" alt="Чайные блины Prosecco Show × Чайная Линия">';
-      h += '<div class="tea-body"><span class="tag">' + esc(T.tag) + '</span><h2 class="t-title disp">' + esc(T.title) + "</h2><p>" + esc(T.text) + "</p>";
-      T.items.forEach(function (it) {
-        h += '<div class="tea-item"><span class="row-body"><span class="tn disp">' + esc(it.title) + '</span><span class="row-cap">' + esc(it.caption) + "</span></span>" + pill(it.url, it.button, "sm") + "</div>";
-      });
-      h += "</div></section>";
-    }
-    return h + footer();
+    // 1. КАРТА ДНЯ — крючок для нового человека
+    var opened = state.opened && deckCard(state.todayCard);
+    x += '<section class="nx-sec' + (NY ? '' : ' nx-first') + '"><button class="nx-day" data-go="card"><span class="nx-day-img" style="background-image:url(' + cardBack(state.todayCard) + ')"></span><span class="nx-day-b"><span class="nx-tag">Челлендж 33 дня · день ' + challengeDay() + '</span><b class="disp">Карта дня</b><span class="nx-t">' + (opened ? "Сегодняшняя карта открыта — загляните в задание" : "Каждый день — карта из колоды «33 уровня присутствия» и задание на сегодня") + '</span><span class="nx-pill">' + (opened ? "Смотреть" : "Открыть карту") + '</span></span></button></section>';
+    // КЛУБ PRSCC+
+    x += '<section class="nx-club rv"><div class="nx-cl-top"><span class="nx-cl-tag">Закрытый клуб</span><b class="disp">PRSCC+</b><span class="nx-cl-sub">Для тех, кто хочет практиковать импровизацию регулярно</span></div><ul class="nx-cl-list">';
+    x += '<li><i>◉</i><span><b>Онлайн-практики импровизации</b>Каждую неделю с тренером</span></li>';
+    x += '<li><i>▤</i><span><b>База знаний</b>Видеокурс «5 золотых правил», методички, подкаст</span></li>';
+    x += '<li><i>%</i><span><b>Скидки для участников</b>−50% на Арт Лаб и скидки на шоу</span></li>';
+    x += '</ul>' + link("https://t.me/prosecco_show", "nx-cl-btn", "Как вступить →") + '</section>';
+    // 2. ПУТЬ
+    x += '<section class="nx-sec"><p class="nx-eb">Выберите путь</p><h2 class="nx-h">' + esc(H.question) + '</h2><div class="nx-bento">';
+    x += '<button class="nx-b b-show" data-go="ent"><span class="nx-tag w">Развлечения</span><b class="disp">Шоу</b><span class="nx-t">Сходить на шоу или заказать на своё событие</span><span class="nx-ar">↗</span></button>';
+    x += '<button class="nx-b b-edu" data-go="edu"><span class="nx-tag">Для себя и для бизнеса</span><b class="disp">Обучение</b><span class="nx-ar">↗</span></button>';
+    x += '<button class="nx-b b-diag" data-go="diag"><span class="nx-tag">Бесплатно</span><b class="disp">Диагностика</b><span class="nx-ar">↗</span></button>';
+    x += '<button class="nx-b b-wide" data-go="events"><span style="display:flex;flex-direction:column;gap:4px"><b class="disp">Афиша</b><span class="nx-t">Ближайшие шоу в Москве</span></span><span class="nx-ar">→</span></button>';
+    x += '</div></section>';
+    // 3. ДОВЕРИЕ
+    x += '<section class="nx-sec nx-nums rv"><div><b class="disp nx-grad">№1</b><span>первый лейбл импровизации</span></div>';
+    x += '<div><b class="disp" data-count="' + C.stars.length + '">0</b><span>звёзд на нашей сцене</span></div>';
+    x += '<div><b class="disp" data-count="' + C.clients.length + '">0</b><span>брендов-клиентов</span></div></section>';
+    x += '<div class="nx-names">' + marq(C.stars, "names") + marq(C.clients, "names rev dim") + '</div>';
+    // 4. ДЛЯ ОРГАНИЗАТОРОВ
+    x += '<section class="nx-sec"><button class="nx-sc s-red" data-invite="1"><span class="nx-tag w">Для организаторов</span><b class="disp">' + esc(I.button) + '</b><span class="nx-go">' + esc(I.note) + ' →</span></button>';
+    if (promoLive()) x += '<button class="nx-strip" data-promo="1"><span class="nx-dot"></span><span><b>' + esc(P.title) + '</b><span>' + esc(P.tag) + '</span></span><i>→</i></button>';
+    x += '</section>';
+    // MERCH
+    x += '<section class="nx-sec"><h2 class="nx-h">Мерч Prosecco Show</h2><div class="nx-shelf">';
+    var SHU = "https://chaline.ru/catalog/chay/puer_i_chyernyy_chay/pressovannyy_shu_puer/173417/?oid=223008";
+    x += '<button class="nx-p" data-prod="shu"><span class="nx-pi"><img src="' + wallUrl("merch-shu.jpg") + '" alt="Prosecco Шу"></span><b>Prosecco Шу</b><span class="nx-t">Шу пуэр · для смелого «да»</span><span class="nx-buy">Подробнее →</span></button>';
+    x += '<button class="nx-p" data-prod="shen"><span class="nx-pi"><img src="' + wallUrl("merch-shen.jpg") + '" alt="Prosecco Шен"></span><b>Prosecco Шен</b><span class="nx-t">Шен пуэр · для чистой головы</span><span class="nx-buy">Подробнее →</span></button>';
+    x += '<button class="nx-p" data-prod="bag"><span class="nx-pi"><img src="' + wallUrl("merch-bag.jpg") + '" alt="Сумка PRSCC"></span><b>Сумка PRSCC</b><span class="nx-t">3 500 ₽ · ручная работа</span><span class="nx-buy">Заказать →</span></button>';
+    x += '</div></section>';
+    // AWARDS + PRESS
+    x += '<section class="nx-sec rv"><div class="nx-aw">';
+    A.awards.forEach(function (w) { x += '<img src="' + (window.KK_AWARDS[w.img] || "") + '" alt="' + esc(w.alt) + '">'; });
+    x += '</div><div class="nx-press">' + esc(A.mediaTitle) + ': ';
+    A.media.forEach(function (m) { x += link(m.url, "", esc(m.name) + " ↗"); });
+    x += '</div></section>';
+    // COLLAB
+    x += '<section class="nx-sec nx-collab rv"><p class="nx-eb">' + esc(K.tag) + '</p><h2 class="nx-huge disp"><span class="nx-grad">Сделаем</span><br>коллаб?</h2><p class="nx-lead">' + esc(K.text) + '</p>' + link(K.url, "nx-btn", esc(K.button) + " ↗") + '</section>';
+    x += '</div>';
+    setTimeout(nxInit, 30);
+    return x;
   };
+  function nxInit() {
+    var els = document.querySelectorAll(".nx .rv"), cnt = document.querySelectorAll(".nx [data-count]");
+    function count(el) { if (el._d) return; el._d = 1; var to = +el.getAttribute("data-count"), t0 = performance.now(); (function f(t) { var k = Math.min(1, (t - t0) / 1200); el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))) + (k === 1 ? "+" : ""); if (k < 1) requestAnimationFrame(f); })(t0); }
+    if (!("IntersectionObserver" in window)) { for (var i = 0; i < els.length; i++) els[i].classList.add("in"); for (i = 0; i < cnt.length; i++) count(cnt[i]); return; }
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); var c = e.target.querySelectorAll("[data-count]"); for (var j = 0; j < c.length; j++) count(c[j]); io.unobserve(e.target); } }); }, { threshold: .2 });
+    for (var i = 0; i < els.length; i++) io.observe(els[i]);
+  }
 
   S.ent = function () {
     var h = top(true) + '<h1 class="h1 disp">Шоу Prosecco Show</h1><p class="lead">Что вы хотите?</p><div class="choice">';
@@ -4748,6 +5047,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     });
     els = root.querySelectorAll("[data-diag]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { diagFor = this.getAttribute("data-diag"); haptic("light"); track("diag_mode", { mode: diagFor }); render(true); });
     els = root.querySelectorAll("[data-diag-go]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", diagSignup);
+    els = root.querySelectorAll("[data-prod]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { track("product_view", { product: this.getAttribute("data-prod") }); openSheet(nxProd(this.getAttribute("data-prod"))); });
     els = root.querySelectorAll("[data-restart]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { quizAns = []; stack[stack.length - 1] = "quiz"; render(); });
     els = root.querySelectorAll("[data-fmt]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { track("format_view", { format: String(this.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80) }); openSheet(formatSheet(+this.getAttribute("data-fmt"))); });
     els = root.querySelectorAll("[data-cat]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { catFilter = this.getAttribute("data-cat"); haptic("light"); render(true); });
@@ -4778,7 +5078,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     var wantPromo = startScreen === "promo", wantNews = startScreen === "news";
     if (wantPromo || wantNews) startScreen = null;
     if (startScreen) stack = ["home", startScreen];
-    var showPromo = D.promo && D.promo.on && (wantPromo || (promoLive() && state.promoSeen !== today()));
+    var showPromo = D.promo && D.promo.on && (wantPromo || (D.promo.popup !== false && promoLive() && state.promoSeen !== today()));
     if (showPromo) state.promoSeen = today();
     save(); track("open", startScreen ? { screen: startScreen } : (wantPromo ? { screen: "promo" } : null)); render();
     var showNews = !showPromo && D.news && D.news.on && (wantNews || (newsLive() && state.newsSeen !== D.news.id));
