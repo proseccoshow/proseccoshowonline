@@ -4047,7 +4047,7 @@ window.KK_DATA = {
   .nx-mq { overflow: hidden; white-space: nowrap; }
   .nx-mq-in { display: inline-flex; align-items: center; animation: nxm 28s linear infinite; }
   .nx-mq.rev .nx-mq-in { animation-direction: reverse; }
-  .nx-mq span { padding: 0 14px; } .nx-mq i { font-style: normal; color: var(--red); font-size: .5em; }
+  .nx-mq span { padding: 0 14px; } .nx-mq i { font-style: normal; color: var(--red); display: inline-flex; align-items: center; } .nx-mq i .mark13 { width: .8em; height: auto; display: block; color: var(--red); }
   .nx-mq.big { font-family: var(--display); font-weight: 700; text-transform: uppercase; font-size: 38px; line-height: 1.15; }
   .nx-mq.out { color: transparent; -webkit-text-stroke: 1.2px rgba(255,255,255,.45); }
   .nx-mq.names { font-size: 22px; font-weight: 600; letter-spacing: -.01em; padding: 4px 0; }
@@ -4511,7 +4511,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
 
     var P = D.promo, I = D.invite, F = D.featured, A = D.about, K = D.collab, T = D.tea, C = D.contact;
     var RULES = ["Да, и…", "Сделай из партнёра звезду", "Ошибки — это подарки", "Шутки не главное, связи решают", "Чистая голова"];
-    function marq(items, cls) { var one = items.map(function (t) { return "<span>" + esc(t) + "</span><i>✦</i>"; }).join(""); return '<div class="nx-mq ' + (cls || "") + '"><div class="nx-mq-in">' + one + one + "</div></div>"; }
+    function marq(items, cls) { var one = items.map(function (t) { return "<span>" + esc(t) + "</span><i>" + MARK + "</i>"; }).join(""); return '<div class="nx-mq ' + (cls || "") + '"><div class="nx-mq-in">' + one + one + "</div></div>"; }
     var x = '<div class="nx">';
     // HERO: обычный или новогодний (D.newYear.on)
     var NY = !!(D.newYear && D.newYear.on);
