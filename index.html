@@ -3427,6 +3427,7 @@ window.KK_DATA = {
 
   // ---------- ОБУЧЕНИЕ ----------
   eduSelf: [
+    { tag: "Бесплатно", title: "Диагностическая сессия", text: "30 минут онлайн: тренеры посмотрят, как вы мыслите в моменте и находите решения.", button: "Подробнее", go: "diag" },
     { tag: "Каждый понедельник", title: "Арт Лаб", text: "Практика импровизации вживую, в 19:00.", button: "Купить билет", url: "https://moscow.qtickets.events/237834-art-lab-prosecco-show" },
     { tag: "Каждый день", title: "Карта дня", text: "Карта из колоды «33 уровня присутствия» и задание на сегодня.", button: "Открыть", go: "card" },
     { tag: "Клуб", title: "Закрытый клуб PRSCC+", text: "Онлайн-практики, Арт Лаб со скидкой 50% и материалы, которых нет в канале.", button: "Как вступить", url: "https://t.me/prosecco_show" }
@@ -3439,7 +3440,28 @@ window.KK_DATA = {
     button: "Написать менеджеру",
     url: "https://t.me/prosecco_show"
   },
+  // Лидмагнит: диагностическая сессия. url — куда ведёт кнопка «Записаться» (текст подставится в сообщение)
+  diag: {
+    tag: "30 минут · онлайн · бесплатно",
+    title: "Диагностическая сессия",
+    short: "Поймите, где вы или ваша команда сейчас и что развивать дальше.",
+    text: "Диагностическая сессия — это возможность понять, где вы или ваша команда сейчас находитесь и что стоит развивать дальше.",
+    team: "За время сессии можно увидеть, как люди выстраивают связи, кто берёт инициативу и какие роли складываются в группе.",
+    self: "Если вы приходите самостоятельно, тренеры смотрят, как вы мыслите в моменте, замечаете разные варианты и находите решения, когда меняются условия.",
+    resultsTitle: "По итогам сессии вы получите первичный анализ вашей команды",
+    resultsLead: "На конкретных эпизодах из упражнений тренеры покажут:",
+    results: [
+      { t: "Как распределяются роли и инициатива", d: "Кто предлагает идеи, кто помогает их развить, кто влияет на итоговое решение и кто остаётся в стороне." },
+      { t: "На что команда уже может опереться", d: "Какие действия помогают участникам слышать друг друга, быстро договариваться и сохранять темп." },
+      { t: "Где взаимодействие даёт сбой", d: "В какой момент инициатива гаснет, предложения остаются без ответа или решение затягивается." },
+      { t: "Что развивать в первую очередь", d: "И какой навык стоит отработать." }
+    ],
+    button: "Записаться на диагностику",
+    url: "https://t.me/prosecco_show",
+    message: { team: "Здравствуйте! Хочу записаться на диагностическую сессию для команды.", self: "Здравствуйте! Хочу записаться на диагностическую сессию для себя." }
+  },
   eduTeam: [
+    { tag: "Бесплатно", title: "Диагностическая сессия", text: "30 минут онлайн: роли, инициатива и точки роста вашей команды.", button: "Подробнее", go: "diag" },
     { tag: "Русская смекалка", title: "Тренинг «5 золотых правил»", text: "Методика импровизации для переговоров, партнёрства и командной работы. Формат подберём под вашу задачу.", button: "Обсудить", url: "https://t.me/prosecco_show" },
     { tag: "На вашем событии", title: "Образовательное шоу", text: "Импровизации можно научиться — прямо на вашем мероприятии, в формате шоу.", button: "Ознакомиться", url: "https://disk.yandex.ru/d/SLTvme4JoEvU2g" },
     { tag: "Смотреть", title: "Эфир Руслана Морозова", text: "Как импровизация работает в бизнесе и становится инструментом переговоров и командной работы.", button: "Смотреть", url: "https://t.me/proseccoshow/1668" },
@@ -3728,6 +3750,13 @@ window.KK_DATA = {
   .prod .p-title { font-size: 26px; margin: 10px 0 6px; }
   .prod p { font-size: 14px; color: #DADADA; }
 
+  /* Диагностическая сессия */
+  .dg-list { display: flex; flex-direction: column; gap: 10px; }
+  .dg-item { display: flex; gap: 14px; padding: 16px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); }
+  .dg-n { flex: 0 0 auto; font-size: 30px; line-height: 1; color: var(--red); }
+  .dg-item b { display: block; font-size: 15px; margin-bottom: 4px; }
+  .dg-item span span { display: block; font-size: 14px; line-height: 1.4; color: #DADADA; }
+
   /* Афиша */
   .list { display: flex; flex-direction: column; gap: 10px; }
   .ev { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); }
@@ -4005,7 +4034,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   var src = "direct";
   try { if (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) src = String(tg.initDataUnsafe.start_param); } catch (e) {}
   // Прямые ссылки на разделы: ?startapp=afisha или ?startapp=afisha__метка (метка остаётся источником)
-  var START_SCREENS = { afisha: "events", quiz: "quiz", card: "card", video: "watch", contact: "contact", catalog: "catalog", edu: "edu", promo: "promo", news: "news" };
+  var START_SCREENS = { afisha: "events", quiz: "quiz", card: "card", video: "watch", contact: "contact", catalog: "catalog", edu: "edu", diag: "diag", promo: "promo", news: "news" };
   var startScreen = null;
   (function () {
     var parts = src.split("__");
@@ -4066,7 +4095,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   var stack = ["home"];
   var quizAns = [];
   var catFilter = "";
-  var TAB_OF = { home: "home", ent: "home", quiz: "home", results: "home", catalog: "home", watch: "watch", edu: "home", eduSelf: "home", eduTeam: "home", card: "card", events: "events", contact: "contact" };
+  var TAB_OF = { home: "home", ent: "home", quiz: "home", results: "home", catalog: "home", watch: "watch", edu: "home", eduSelf: "home", eduTeam: "home", diag: "home", card: "card", events: "events", contact: "contact" };
 
   function top(showBack) {
     return '<div class="top">' + (showBack ? '<button class="back" data-back="1">‹ Назад</button>' : "<span></span>") +
@@ -4311,7 +4340,10 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     var h = top(true) + '<h1 class="h1 disp">Обучение</h1><p class="lead">Для кого?</p><div class="choice">';
     h += '<button class="opt" data-go="eduSelf"><span class="o-body"><span class="o-title disp">Для себя</span><span class="o-cap">Арт Лаб, кэмп, карта дня, закрытый клуб</span></span>' + AR + "</button>";
     h += '<button class="opt" data-go="eduTeam"><span class="o-body"><span class="o-title disp">Для бизнеса</span><span class="o-cap">Тренинги для команд и руководителей</span></span>' + AR + "</button>";
-    return h + "</div>";
+    h += "</div>";
+    var Dg = D.diag;
+    if (Dg) h += '<button class="fcard best" data-go="diag" style="margin-top:10px"><span class="fc-head"><span class="tag">' + esc(Dg.tag) + '</span></span><span class="fc-title disp">' + esc(Dg.title) + '</span><span class="fc-short">' + esc(Dg.short) + '</span><span class="fc-more">Подробнее</span></button>';
+    return h;
   };
 
   function prods(list) {
@@ -4331,6 +4363,30 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     }
     return h + prods(D.eduTeam);
   };
+
+  var diagFor = null;
+  function diagMode() { return diagFor || (stack.indexOf("eduSelf") !== -1 ? "self" : "team"); }
+  S.diag = function () {
+    var Dg = D.diag, m = diagMode();
+    var h = top(true) + '<span class="tag">' + esc(Dg.tag) + '</span><h1 class="h1 disp" style="margin-top:12px;font-size:clamp(30px,10vw,44px);overflow-wrap:anywhere">' + esc(Dg.title) + '</h1><p class="lead">' + esc(Dg.text) + "</p>";
+    h += '<div class="cats" role="tablist" style="margin-bottom:12px">' +
+      '<button class="chip' + (m === "team" ? " on" : "") + '" data-diag="team" role="tab" aria-selected="' + (m === "team") + '">С командой</button>' +
+      '<button class="chip' + (m === "self" ? " on" : "") + '" data-diag="self" role="tab" aria-selected="' + (m === "self") + '">Самостоятельно</button></div>';
+    h += '<div class="prod" style="margin-bottom:22px"><p>' + esc(Dg[m]) + "</p></div>";
+    h += '<h2 class="sub disp">' + esc(Dg.resultsTitle) + '</h2><p class="lead" style="margin-bottom:12px">' + esc(Dg.resultsLead) + '</p><div class="dg-list">';
+    Dg.results.forEach(function (r, i) {
+      h += '<div class="dg-item"><span class="dg-n disp">' + (i + 1) + '</span><span><b>' + esc(r.t) + "</b><span>" + esc(r.d) + "</span></span></div>";
+    });
+    h += '</div><div class="final"><button class="pill" data-diag-go>' + esc(Dg.button) + "</button><p>30 минут · онлайн · бесплатно</p></div>";
+    return h;
+  };
+  function diagSignup() {
+    var Dg = D.diag, m = diagMode();
+    track("diag_signup", { mode: m });
+    haptic("medium");
+    var msg = Dg.message && Dg.message[m];
+    openUrl(Dg.url + (msg && Dg.url.indexOf("https://t.me/") === 0 ? (Dg.url.indexOf("?") === -1 ? "?" : "&") + "text=" + encodeURIComponent(msg) : ""));
+  }
 
   S.events = function () {
     var t = new Date(); t.setHours(0, 0, 0, 0);
@@ -4479,6 +4535,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     if (cur === "card" && !state.opened) setMain("Открыть карту", reveal);
     else if (cur === "results" || cur === "catalog" || cur === "eduTeam") setMain(cur === "eduTeam" ? "Написать менеджеру" : "Обсудить событие", cur === "eduTeam" ? function () { openUrl(D.bizManager ? D.bizManager.url : D.contactUrl); } : contactAction);
     else if (cur === "contact") setMain("Написать в Telegram", contactAction);
+    else if (cur === "diag") setMain(D.diag.button, diagSignup);
     else setMain("", null);
   }
 
@@ -4689,6 +4746,8 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
       quizAns.push(this.getAttribute("data-ans")); haptic("light");
       if (quizAns.length >= D.quiz.length) { stack[stack.length - 1] = "results"; render(); } else render();
     });
+    els = root.querySelectorAll("[data-diag]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { diagFor = this.getAttribute("data-diag"); haptic("light"); track("diag_mode", { mode: diagFor }); render(true); });
+    els = root.querySelectorAll("[data-diag-go]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", diagSignup);
     els = root.querySelectorAll("[data-restart]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { quizAns = []; stack[stack.length - 1] = "quiz"; render(); });
     els = root.querySelectorAll("[data-fmt]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { track("format_view", { format: String(this.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80) }); openSheet(formatSheet(+this.getAttribute("data-fmt"))); });
     els = root.querySelectorAll("[data-cat]"); for (i = 0; i < els.length; i++) els[i].addEventListener("click", function () { catFilter = this.getAttribute("data-cat"); haptic("light"); render(true); });
