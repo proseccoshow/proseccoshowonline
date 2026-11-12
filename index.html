@@ -4077,6 +4077,7 @@ window.KK_DATA = {
   .nx { --g: #86868B; --c2: #1C1C1E; margin: 0 -20px; overflow: hidden; font-family: -apple-system, "SF Pro Display", Inter, system-ui, sans-serif; }
   .nx > section, .nx > p, .nx > .foot { padding-left: 20px; padding-right: 20px; }
   .nx-hero { padding-top: 18px; padding-bottom: 22px; }
+  .nx-aw-top { margin: 4px 16px 0; } .nx-rules { margin-top: 26px; }
   .nx-hi { color: var(--g); font-size: 15px; }
   .nx-big { font-size: 72px; line-height: .9; margin: 14px 0 16px; letter-spacing: -.01em; }
   .nx-grad { background: linear-gradient(100deg, #FF0000 0%, #FF2A2A 55%, #FF6A6A 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -4660,7 +4661,9 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   x += '<div class="nx-id"><img src="' + LOGO + '" alt="Prosecco Show"><span>' + esc(H.hello) + (user && user.first_name ? ", " + esc(user.first_name) : "") + '!</span></div>';
       x += '<h1 class="nx-big disp" style="font-size:clamp(26px,8.6vw,34px);line-height:1.02;margin-top:24px">Лучшее вечернее шоу,<br><span class="nx-grad">основанное на импровизации*</span></h1>';
   x += '<p class="nx-who" style="margin-top:16px">Первый в России лейбл комедийной и музыкальной импровизации. Зрители рассказывают истории — артисты прямо на сцене превращают их в песни и спектакли.</p><p class="ap-note" style="font-size:11px;color:#5a5a5e;margin-top:10px">' + esc(H.claimNote) + '</p></section>';
-      x += marq(RULES, "big") + marq(RULES.slice().reverse(), "big out rev");
+      x += '<div class="nx-aw nx-aw-top">';
+      A.awards.forEach(function (w) { x += '<img src="' + (window.KK_AWARDS[w.img] || "") + '" alt="' + esc(w.alt) + '">'; });
+      x += '</div>';
     }
     // 1. КАРТА ДНЯ — крючок для нового человека
     var opened = state.opened && deckCard(state.todayCard);
@@ -4695,9 +4698,8 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     x += '<button class="nx-p" data-prod="bag"><span class="nx-pi"><img src="' + wallUrl("merch-bag.jpg") + '" alt="Сумка PRSCC"></span><b>Сумка PRSCC</b><span class="nx-t">3 500 ₽ · ручная работа</span><span class="nx-buy">Заказать →</span></button>';
     x += '</div></section>';
     // AWARDS + PRESS
-    x += '<section class="nx-sec rv"><div class="nx-aw">';
-    A.awards.forEach(function (w) { x += '<img src="' + (window.KK_AWARDS[w.img] || "") + '" alt="' + esc(w.alt) + '">'; });
-    x += '</div><div class="nx-press">' + esc(A.mediaTitle) + ': ';
+    x += '<div class="nx-rules rv">' + marq(RULES, "big") + marq(RULES.slice().reverse(), "big out rev") + '</div>';
+    x += '<section class="nx-sec rv"><div class="nx-press" style="margin-top:0">' + esc(A.mediaTitle) + ': ';
     A.media.forEach(function (m) { x += link(m.url, "", esc(m.name) + " ↗"); });
     x += '</div></section>';
     // COLLAB
