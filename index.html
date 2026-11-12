@@ -3502,8 +3502,8 @@ window.KK_DATA = {
   // Экран «Связаться»: три контакта. url — Telegram, text — готовое сообщение.
   contacts: [
     { dept: "Отдел продаж · лейбл Prosecco Show", name: "Анастасия", role: "Шоу на ваше событие", url: "https://t.me/prosecco_show", text: "Здравствуйте! Пишу из приложения Prosecco Show — хочу шоу на событие." },
-    { dept: "Отдел продаж · Русская Смекалка", name: "Оксана", role: "Обучение и тренинги для команд", url: "https://t.me/prosecco_show", text: "Здравствуйте! Пишу из приложения Prosecco Show — интересует обучение для команды." },
-    { dept: "Для брендов", name: "Анастасия Белых", role: "Партнёрство, спецпроекты, реклама", url: "https://t.me/anast_bell", text: "Здравствуйте! Пишу из приложения Prosecco Show — хочу обсудить партнёрство / рекламу." }
+    { dept: "Отдел продаж · Русская Смекалка", name: "Оксана", role: "Обучение и тренинги для команд", phone: "+7 938 098-32-20", url: "https://t.me/+79380983220", text: "Здравствуйте! Пишу из приложения Prosecco Show — интересует обучение для команды." },
+    { dept: "Для брендов", name: "Анастасия Белых", role: "Партнёрство, спецпроекты, реклама", phone: "+7 928 151-68-59", url: "https://t.me/anast_bell", text: "Здравствуйте! Пишу из приложения Prosecco Show — хочу обсудить партнёрство / рекламу." }
   ],
 
   // ---------- СВЯЗАТЬСЯ ----------
@@ -4221,6 +4221,8 @@ window.KK_DATA = {
   .md-p { padding: 10px 14px; border-radius: 999px; background: #1C1C1E; font-size: 14px; font-weight: 500; color: #fff; }
   .ct-card { padding: 22px 20px; border-radius: 24px; background: #1C1C1E; }
   .ct-list3 { display: flex; flex-direction: column; gap: 14px; }
+  .ct-btns { display: flex; gap: 10px; } .ct-btns .ct-btn { flex: 1; }
+  .ct-ph { display: block; font-size: 14px; color: #E5E5EA !important; margin-top: 2px; }
   .ct-list3 .ct-btn { background: #2C2C2E; color: #fff; padding: 13px; font-size: 15px; }
   .ct-card .nx-tag { margin-bottom: 12px; }
   .ct-who { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
@@ -4862,8 +4864,8 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     h += '<h1 class="h1 disp">Связаться</h1><p class="lead">' + esc(O.title) + '.</p><div class="ct-list3">';
     D.contacts.forEach(function (c) {
       var ini = c.name.split(" ").map(function (w) { return w.charAt(0); }).join("").slice(0, 2);
-      var u = c.url + (c.text && c.url.indexOf("https://t.me/") === 0 ? "?text=" + encodeURIComponent(c.text) : "");
-      h += '<div class="ct-card"><p class="nx-tag">' + esc(c.dept) + '</p><div class="ct-who"><span class="ct-av disp">' + esc(ini) + '</span><span><b>' + esc(c.name) + '</b><span>' + esc(c.role) + '</span></span></div>' + link(u, "ct-btn", "Написать") + '</div>';
+      var u = c.url + (c.text && /^https:\/\/t\.me\/[A-Za-z]/.test(c.url) ? "?text=" + encodeURIComponent(c.text) : "");
+      h += '<div class="ct-card"><p class="nx-tag">' + esc(c.dept) + '</p><div class="ct-who"><span class="ct-av disp">' + esc(ini) + '</span><span><b>' + esc(c.name) + '</b><span>' + esc(c.role) + (c.phone ? '<span class="ct-ph">' + esc(c.phone) + '</span>' : '') + '</span></span></div><div class="ct-btns">' + link(u, "ct-btn", "Написать") + (c.phone ? '<a class="ct-btn" href="tel:' + c.phone.replace(/[^+\d]/g, "") + '">Позвонить</a>' : '') + '</div></div>';
     });
     h += '</div><div class="rows ct-rows">' + link(O.siteUrl, "row", '<span class="row-body"><span class="row-title">Сайт</span><span class="row-cap">' + esc(O.site) + '</span></span><span class="ar">↗</span>') +
       link(O.reviewsUrl, "row", '<span class="row-body"><span class="row-title">' + esc(O.reviews) + '</span><span class="row-cap">Яндекс Диск</span></span><span class="ar">↗</span>') + '</div>';
