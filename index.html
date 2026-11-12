@@ -3499,6 +3499,13 @@ window.KK_DATA = {
     { tag: "Читать", title: "5 золотых правил импровизации", text: "Разбор методики от SETTERS.", button: "Читать", url: "https://www.setters.media/post/liderstvo-i-improvizatsiya" }
   ],
 
+  // Экран «Связаться»: три контакта. url — Telegram, text — готовое сообщение.
+  contacts: [
+    { dept: "Отдел продаж · лейбл Prosecco Show", name: "Анастасия", role: "Шоу на ваше событие", url: "https://t.me/prosecco_show", text: "Здравствуйте! Пишу из приложения Prosecco Show — хочу шоу на событие." },
+    { dept: "Отдел продаж · Русская Смекалка", name: "Оксана", role: "Обучение и тренинги для команд", url: "https://t.me/prosecco_show", text: "Здравствуйте! Пишу из приложения Prosecco Show — интересует обучение для команды." },
+    { dept: "Партнёрство и спецпроекты", name: "Анастасия Белых", role: "Коллабы, интеграции, спецпроекты", url: "https://t.me/anast_bell", text: "Здравствуйте! Пишу из приложения Prosecco Show — хочу обсудить партнёрство." }
+  ],
+
   // ---------- СВЯЗАТЬСЯ ----------
   contact: {
     title: "Пишите — и мы создадим шоу для вас",
@@ -4213,6 +4220,9 @@ window.KK_DATA = {
   .md-press { display: flex; flex-wrap: wrap; gap: 10px; }
   .md-p { padding: 10px 14px; border-radius: 999px; background: #1C1C1E; font-size: 14px; font-weight: 500; color: #fff; }
   .ct-card { padding: 22px 20px; border-radius: 24px; background: #1C1C1E; }
+  .ct-list3 { display: flex; flex-direction: column; gap: 14px; }
+  .ct-list3 .ct-btn { background: #2C2C2E; color: #fff; padding: 13px; font-size: 15px; }
+  .ct-card .nx-tag { margin-bottom: 12px; }
   .ct-who { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
   .ct-av { flex: 0 0 52px; height: 52px; border-radius: 50%; background: linear-gradient(160deg, #FF2D2D, #B30000); display: flex; align-items: center; justify-content: center; font-size: 20px; }
   .ct-who b { display: block; font-size: 17px; font-weight: 600; } .ct-who span span { font-size: 14px; color: #86868B; }
@@ -4848,16 +4858,15 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   };
 
   S.contact = function () {
-    var O = D.contact, K = D.collab, h = top(stack.length > 1);
-    h += '<h1 class="h1 disp">Связаться</h1><p class="lead">' + esc(O.title) + '.</p>';
-    var ini = O.person.split(" ").map(function (w) { return w.charAt(0); }).join("").slice(0, 2);
-    h += '<div class="ct-card"><div class="ct-who"><span class="ct-av disp">' + esc(ini) + '</span><span><b>' + esc(O.person) + '</b><span>' + esc(O.role) + '</span></span></div>';
-    h += link(D.contactUrl, "ct-btn", "Написать в Telegram") + '</div>';
-    h += '<div class="rows ct-rows">' + link(O.siteUrl, "row", '<span class="row-body"><span class="row-title">Сайт</span><span class="row-cap">' + esc(O.site) + '</span></span><span class="ar">↗</span>') +
-      link(O.reviewsUrl, "row", '<span class="row-body"><span class="row-title">' + esc(O.reviews) + '</span><span class="row-cap">Яндекс Диск</span></span><span class="ar">↗</span>') +
-      (K ? link(K.url, "row", '<span class="row-body"><span class="row-title">Коллаб для брендов</span><span class="row-cap">Интеграции, спецпроекты, совместные продукты</span></span><span class="ar">↗</span>') : "") + '</div>';
-    h += '<p class="md-g">Свои истории уже рассказали</p><p class="ct-list">' + O.stars.map(function (n) { return esc(n).replace(/ /g, "&nbsp;"); }).join(" · ") + ' и многие другие</p>';
-    h += '<p class="md-g">Нам доверяют</p><p class="ct-list">' + O.clients.map(function (n) { return esc(n).replace(/ /g, "&nbsp;"); }).join(" · ") + '</p>';
+    var O = D.contact, h = top(stack.length > 1);
+    h += '<h1 class="h1 disp">Связаться</h1><p class="lead">' + esc(O.title) + '.</p><div class="ct-list3">';
+    D.contacts.forEach(function (c) {
+      var ini = c.name.split(" ").map(function (w) { return w.charAt(0); }).join("").slice(0, 2);
+      var u = c.url + (c.text && c.url.indexOf("https://t.me/") === 0 ? "?text=" + encodeURIComponent(c.text) : "");
+      h += '<div class="ct-card"><p class="nx-tag">' + esc(c.dept) + '</p><div class="ct-who"><span class="ct-av disp">' + esc(ini) + '</span><span><b>' + esc(c.name) + '</b><span>' + esc(c.role) + '</span></span></div>' + link(u, "ct-btn", "Написать") + '</div>';
+    });
+    h += '</div><div class="rows ct-rows">' + link(O.siteUrl, "row", '<span class="row-body"><span class="row-title">Сайт</span><span class="row-cap">' + esc(O.site) + '</span></span><span class="ar">↗</span>') +
+      link(O.reviewsUrl, "row", '<span class="row-body"><span class="row-title">' + esc(O.reviews) + '</span><span class="row-cap">Яндекс Диск</span></span><span class="ar">↗</span>') + '</div>';
     return h;
   };
 
