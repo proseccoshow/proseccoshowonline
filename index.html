@@ -4268,6 +4268,60 @@ window.KK_DATA = {
   .dg-note b { display: block; font-size: 15px; margin-bottom: 4px; } .dg-note span { font-size: 14px; line-height: 1.45; color: #A1A1A6; }
   .dg-note:first-of-type { margin-top: 28px; }
 </style>
+
+<style>
+  /* ===== Карта дня v2 — легче и живее ===== */
+  .cd-head { text-align: center; margin: -4px 0 6px; }
+  .cd-head .deck-name { margin-bottom: 6px; }
+  .cd-h1 { font-size: 34px; letter-spacing: .01em; }
+  .cd-meta { display: inline-flex; align-items: center; gap: 10px; margin-top: 12px; padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,.06); font-size: 13px; color: #C7C7CC; }
+  .cd-meta b { color: #fff; font-weight: 600; }
+  .cd-dot { width: 3px; height: 3px; border-radius: 50%; background: #5A5A5E; }
+  .cd-bar { height: 2px; max-width: 220px; margin: 12px auto 0; background: rgba(255,255,255,.1); border-radius: 2px; overflow: hidden; }
+  .cd-bar i { display: block; height: 100%; background: linear-gradient(90deg, #FF5A5A, var(--red)); border-radius: 2px; transition: width .8s cubic-bezier(.2,.8,.2,1); }
+  .cd-lv { margin-top: 8px; font-size: 12px; color: #6E6E73; letter-spacing: .02em; }
+
+  .stage { position: relative; padding: 26px 0 8px; }
+  .stage .flip { width: min(66vw, 290px); z-index: 2; }
+  .stage:not(.is-open) .flip { animation: cd-float 4.5s ease-in-out infinite; }
+  .stage:not(.is-open) .flip:active { animation: none; transform: scale(.97); transition: transform .15s; }
+  .flip img { box-shadow: 0 30px 60px -20px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.1); border-radius: 16px; }
+  /* колода позади */
+  .st-deck, .st-deck::before { position: absolute; left: 50%; top: 26px; width: min(66vw, 290px); aspect-ratio: 538 / 834; border-radius: 16px; background: #161618; box-shadow: 0 0 0 1px rgba(255,255,255,.06); }
+  .st-deck { transform: translateX(-50%) translate(10px, 8px) rotate(4deg); z-index: 1; }
+  .st-deck::before { content: ""; left: 0; top: 0; transform: translate(-22px, 6px) rotate(-9deg); z-index: -1; background: #111113; }
+  .stage.is-open .st-deck { opacity: 0; transform: translateX(-50%) translate(0, 30px) scale(.9); transition: all .6s ease; }
+  /* свечение */
+  .st-glow { position: absolute; left: 50%; top: 45%; width: 120%; max-width: 480px; aspect-ratio: 1; transform: translate(-50%, -50%); background: radial-gradient(closest-side, rgba(255,0,0,.38), rgba(255,0,0,.12) 55%, transparent 75%); filter: blur(10px); z-index: 0; pointer-events: none; animation: cd-breathe 4.5s ease-in-out infinite; }
+  .stage.is-open .st-glow { background: radial-gradient(closest-side, rgba(255,60,60,.22), transparent 70%); animation: none; }
+  .stage.flash .st-glow { animation: cd-flash .9s ease-out; }
+  /* блик по рубашке */
+  .stage:not(.is-open) .flip::after { content: ""; position: absolute; inset: 0; border-radius: 16px; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.22) 50%, transparent 65%); background-size: 250% 100%; animation: cd-shine 4.5s ease-in-out infinite; pointer-events: none; backface-visibility: hidden; }
+
+  .tap-hint { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 18px; font-size: 13px; color: #8E8E93; }
+  .tap-hint span { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: cd-ping 1.6s ease-out infinite; }
+
+  .task { margin-top: 22px; padding: 20px; border-radius: 24px; background: #1C1C1E; color: #fff; position: relative; overflow: hidden; animation: cd-up .6s .15s both cubic-bezier(.2,.8,.2,1); }
+  .task::before { content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px; border-radius: 0 3px 3px 0; background: var(--red); }
+  .task p { font-size: 18px; line-height: 1.38; font-weight: 600; letter-spacing: -.01em; }
+  .cd-acts { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 14px; animation: cd-up .6s .3s both cubic-bezier(.2,.8,.2,1); }
+  .cd-acts .pill.wide { padding: 15px 18px; font-size: 16px; }
+  .cd-link { padding: 10px; font-size: 14px; font-weight: 600; color: #C7C7CC; }
+  .next { margin-top: 10px; font-size: 12px; color: #6E6E73; }
+  .cd-how { margin: 28px 0 0; background: transparent !important; padding: 0; }
+  .cd-how summary { justify-content: center; gap: 8px; font-size: 14px; color: #8E8E93; font-weight: 500; }
+  .cd-how ul { text-align: left; background: #1C1C1E; border-radius: 20px; padding: 16px 18px; }
+
+  @keyframes cd-float { 0%, 100% { transform: translateY(0) rotate(-.6deg); } 50% { transform: translateY(-8px) rotate(.6deg); } }
+  @keyframes cd-breathe { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
+  @keyframes cd-shine { 0%, 55% { background-position: 150% 0; } 100% { background-position: -60% 0; } }
+  @keyframes cd-flash { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.6); } 40% { opacity: 1; transform: translate(-50%, -50%) scale(1.25); } 100% { opacity: .9; transform: translate(-50%, -50%) scale(1); } }
+  @keyframes cd-ping { 0% { box-shadow: 0 0 0 0 rgba(255,0,0,.6); } 100% { box-shadow: 0 0 0 10px rgba(255,0,0,0); } }
+  @keyframes cd-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .stage .flip, .st-glow, .stage .flip::after, .tap-hint span, .task, .cd-acts { animation: none !important; }
+  }
+</style>
 </head>
 <body>
 <main class="wrap" id="app"></main>
@@ -4877,25 +4931,25 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     var c = deckCard(state.todayCard), Dk = D.deck;
     var h = top(stack.length > 1);
     var CH = Dk.challenge, day = challengeDay();
-    h += '<p class="deck-name">' + MARK + esc(CH.title) + '</p><h1 class="h1 disp">Карта дня</h1>';
-    h += '<div class="ch-day"><span><b>День ' + day + "</b> из 33</span><span>" + esc(levelOf(state.todayCard || 1).name) + " · " + esc(levelOf(state.todayCard || 1).theme) + "</span></div>";
-    h += '<div class="ch-bar"><i style="width:' + Math.round(state.got.length / 33 * 100) + '%"></i></div>';
-    h += '<details class="how"' + (state.got.length === 0 ? " open" : "") + "><summary>" + esc(CH.how) + "</summary><ul>";
-    CH.steps.forEach(function (st) { h += "<li>" + esc(st) + "</li>"; });
-    h += "</ul></details>";
-    h += '<div class="stats"><div class="stat"><b>🔥 ' + liveStreak() + "</b><span>" + plural(liveStreak(), "день", "дня", "дней") + ' подряд</span></div>' +
-      '<div class="stat"><b>' + state.got.length + '<span style="font-size:16px;color:var(--muted)"> / 33</span></b><span>карт в коллекции</span></div></div>';
-    h += '<div class="stage"><div class="flip' + (state.opened ? " open" : "") + '" id="flip" role="button" aria-label="Открыть карту дня">' +
+    var LV = levelOf(state.todayCard || 1);
+    h += '<div class="cd-head"><p class="deck-name">' + MARK + esc(CH.title) + '</p><h1 class="cd-h1 disp">Карта дня</h1>' +
+      '<div class="cd-meta"><span><b>День ' + day + '</b> / 33</span><span class="cd-dot"></span><span>🔥 ' + liveStreak() + '</span><span class="cd-dot"></span><span>' + state.got.length + ' ' + plural(state.got.length, "карта", "карты", "карт") + '</span></div>' +
+      '<div class="cd-bar"><i style="width:' + Math.max(3, Math.round(state.got.length / 33 * 100)) + '%"></i></div>' +
+      '<p class="cd-lv">' + esc(LV.name) + " · " + esc(LV.theme) + '</p></div>';
+    h += '<div class="stage' + (state.opened ? " is-open" : "") + '"><span class="st-glow"></span><span class="st-deck"></span><div class="flip' + (state.opened ? " open" : "") + '" id="flip" role="button" aria-label="Открыть карту дня">' +
       '<img class="back-img" src="' + cardBack(state.todayCard) + '" alt="Рубашка карты"><img class="face" src="' + (IMG[state.todayCard] || "") + '" alt="' + esc(c ? c.title : "") + '"></div></div>';
     if (!state.opened && needContact()) {
       var G = D.contactGate;
       h += '<div class="gate"><p class="g-title disp">' + esc(G.title) + '</p><p class="g-text">' + esc(gateDeclined ? G.declined : G.text) + '</p>' +
         '<button class="pill red" data-contact="1">' + esc(G.button) + '</button><p class="g-note">' + (G.privacyUrl ? link(G.privacyUrl, "", esc(G.consent)) : esc(G.consent)) + "</p></div>";
     } else if (!state.opened) {
-      h += '<p class="tap-hint">Нажмите на карту, чтобы открыть</p>';
+      h += '<p class="tap-hint"><span></span>Коснитесь карты</p>';
     } else {
       h += cardAfter(c);
     }
+    h += '<details class="how cd-how"' + (state.got.length === 0 && !state.opened ? " open" : "") + "><summary>" + esc(CH.how) + "</summary><ul>";
+    CH.steps.forEach(function (st) { h += "<li>" + esc(st) + "</li>"; });
+    h += "</ul></details>";
     h += collection();
     if (state.got.length >= 33 && CH.prize) h += '<div class="bonus" style="margin-top:22px"><p>🎁 ' + esc(CH.prize.text) + "</p>" + pill(CH.prize.url, CH.prize.button, "sm") + "</div>";
     h += '<h3 class="sub disp">Спутник челленджа</h3>' + wallBlock();
@@ -4905,7 +4959,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   function cardAfter(c) {
     var Dk = D.deck, lv = levelOf(c.n), h = "";
     h += '<div class="task"><span class="tag">Задание дня · ' + esc(lv.name) + "</span><p>" + esc(c.task) + "</p></div>";
-    h += '<div class="btns"><button class="pill red" data-share="0">Поделиться картой</button>' + pill(Dk.deeper.url, Dk.deeper.button, "ghost") + "</div>";
+    h += '<div class="cd-acts"><button class="pill red wide" data-share="0">Поделиться картой</button>' + pill(Dk.deeper.url, Dk.deeper.button, "cd-link") + "</div>";
     if (state.streak && state.streak % Dk.streakGoal === 0) {
       var B = Dk.bonus;
       h += '<div class="bonus"><p>' + esc(B.text) + "</p>" + (B.code ? '<span class="code">' + esc(B.code) + "</span>" : pill(B.url, B.button, "sm")) + "</div>";
@@ -5029,7 +5083,9 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     if (!el || state.opened) return;
     if (needContact()) { askContact(); return; }
     openToday();
+    haptic("medium");
     el.classList.add("open");
+    if (el.parentNode) el.parentNode.classList.add("is-open", "flash");
     setTimeout(function () { render(true); checkReward(); }, 650);
   }
 
