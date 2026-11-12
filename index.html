@@ -4429,7 +4429,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   var src = "direct";
   try { if (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) src = String(tg.initDataUnsafe.start_param); } catch (e) {}
   // Прямые ссылки на разделы: ?startapp=afisha или ?startapp=afisha__метка (метка остаётся источником)
-  var START_SCREENS = { afisha: "events", quiz: "quiz", card: "card", video: "watch", contact: "contact", catalog: "catalog", edu: "edu", diag: "diag", promo: "promo", news: "news" };
+  var START_SCREENS = { afisha: "events", quiz: "quiz", card: "card", video: "watch", contact: "contact", catalog: "catalog", edu: "edu", diag: "diag", promo: "promo", news: "news", merch: "merch", bag: "p_bag", shu: "p_shu", shen: "p_shen" };
   var startScreen = null;
   (function () {
     var parts = src.split("__");
@@ -4688,7 +4688,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     if (promoLive()) x += '<button class="nx-strip" data-promo="1"><span class="nx-dot"></span><span><b>' + esc(P.title) + '</b><span>' + esc(P.tag) + '</span></span><i>→</i></button>';
     x += '</section>';
     // MERCH
-    x += '<section class="nx-sec"><h2 class="nx-h">Мерч Prosecco Show</h2><div class="nx-shelf">';
+    x += '<section class="nx-sec" id="merch" style="scroll-margin-top:16px"><h2 class="nx-h">Мерч Prosecco Show</h2><div class="nx-shelf">';
     var SHU = "https://chaline.ru/catalog/chay/puer_i_chyernyy_chay/pressovannyy_shu_puer/173417/?oid=223008";
     x += '<button class="nx-p" data-prod="shu"><span class="nx-pi"><img src="' + wallUrl("merch-shu.jpg") + '" alt="Prosecco Шу"></span><b>Prosecco Шу</b><span class="nx-t">Шу пуэр · для смелого «да»</span><span class="nx-buy">Подробнее →</span></button>';
     x += '<button class="nx-p" data-prod="shen"><span class="nx-pi"><img src="' + wallUrl("merch-shen.jpg") + '" alt="Prosecco Шен"></span><b>Prosecco Шен</b><span class="nx-t">Шен пуэр · для чистой головы</span><span class="nx-buy">Подробнее →</span></button>';
@@ -5270,12 +5270,20 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     if (!state.src) state.src = src;
     if (!state.firstSeen) state.firstSeen = new Date().toISOString();
     var wantPromo = startScreen === "promo", wantNews = startScreen === "news";
-    if (wantPromo || wantNews) startScreen = null;
+    var wantMerch = startScreen === "merch" ? "merch" : (startScreen && startScreen.indexOf("p_") === 0 ? startScreen.slice(2) : null);
+    if (wantPromo || wantNews || wantMerch) startScreen = null;
     if (startScreen) stack = ["home", startScreen];
     var showPromo = D.promo && D.promo.on && (wantPromo || (D.promo.popup !== false && promoLive() && state.promoSeen !== today()));
     if (showPromo) state.promoSeen = today();
-    save(); track("open", startScreen ? { screen: startScreen } : (wantPromo ? { screen: "promo" } : null)); render();
-    var showNews = !showPromo && D.news && D.news.on && (wantNews || (newsLive() && state.newsSeen !== D.news.id));
+    save(); track("open", startScreen ? { screen: startScreen } : (wantPromo ? { screen: "promo" } : (wantMerch ? { screen: "merch", product: wantMerch } : null))); render();
+    if (wantMerch) {
+      setTimeout(function () {
+        var m = document.getElementById("merch"); if (m) m.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (wantMerch !== "merch" && window.NX_PROD && window.NX_PROD[wantMerch]) setTimeout(function () { track("product_view", { product: wantMerch }); openSheet(nxProd(wantMerch)); }, 500);
+      }, 300);
+      showPromo = false;
+    }
+    var showNews = !showPromo && !wantMerch && D.news && D.news.on && (wantNews || (newsLive() && state.newsSeen !== D.news.id));
     if (showNews) { state.newsSeen = D.news.id; save(); }
     if (showPromo) setTimeout(promoPopup, 600);
     else if (showNews) setTimeout(newsPopup, 600);
