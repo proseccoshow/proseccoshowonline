@@ -4750,8 +4750,6 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
       if (/Квартирник|Это хит/.test(m.title)) return;
       h += link(m.url, "row", '<span class="v-play" aria-hidden="true">▶</span><span class="row-body"><span class="row-title">' + esc(m.title) + '</span><span class="row-cap">' + esc(m.caption) + "</span></span>" + '<span class="ar" aria-hidden="true">↗</span>');
     });
-    h += '</div><p class="md-g">О нас пишут</p><div class="md-press">';
-    M.press.forEach(function (p) { if (p.url) h += link(p.url, "md-p", esc(p.name) + ' ↗'); });
     return h + '</div>';
   };
 
