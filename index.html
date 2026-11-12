@@ -4212,6 +4212,14 @@ window.KK_DATA = {
   .md-go { flex: 0 0 auto; font-size: 11px; text-decoration: underline; text-underline-offset: 3px; color: #E5E5EA; }
   .md-press { display: flex; flex-wrap: wrap; gap: 10px; }
   .md-p { padding: 10px 14px; border-radius: 999px; background: #1C1C1E; font-size: 14px; font-weight: 500; color: #fff; }
+  .ct-card { padding: 22px 20px; border-radius: 24px; background: #1C1C1E; }
+  .ct-who { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .ct-av { flex: 0 0 52px; height: 52px; border-radius: 50%; background: linear-gradient(160deg, #FF2D2D, #B30000); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .ct-who b { display: block; font-size: 17px; font-weight: 600; } .ct-who span span { font-size: 14px; color: #86868B; }
+  .ct-btn { display: block; text-align: center; padding: 15px; border-radius: 999px; background: var(--red); color: #fff; font-weight: 600; font-size: 16px; }
+  .ct-rows { margin-top: 20px; }
+  .ct-rows .ar { color: #86868B; }
+  .ct-list { font-size: 15px; line-height: 1.6; color: #E5E5EA; }
   /* Воздух */
   .wrap { padding-top: 26px; }
   .top { margin-bottom: 34px; }
@@ -4840,17 +4848,17 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
   };
 
   S.contact = function () {
-    var O = D.contact, h = top(stack.length > 1);
-    h += '<section class="contact-hero"><h2 class="disp">' + esc(O.title) + '</h2><p class="who disp">' + esc(O.person) + '</p><p class="role">' + esc(O.role) + "</p>";
-    h += '<div class="btns">' + pill(D.contactUrl, "Написать в Telegram") + pill(O.siteUrl, O.site, "ghost") + "</div></section>";
-    h += collabBlock();
-    h += '<div class="rows" style="margin-top:18px">' + link(O.reviewsUrl, "row", '<span class="row-body"><span class="row-title">' + esc(O.reviews) + "</span></span>" + AR) + "</div>";
-    h += '<h3 class="sub disp">Свои истории уже рассказали</h3><div class="chips">';
-    O.stars.forEach(function (s) { h += '<span class="chip">' + esc(s) + "</span>"; });
-    h += '<span class="chip" style="border-style:dashed">и многие другие</span></div>';
-    h += '<h3 class="sub disp">Нам доверяют</h3><div class="chips">';
-    O.clients.forEach(function (s) { h += '<span class="chip">' + esc(s) + "</span>"; });
-    return h + "</div>" + footer();
+    var O = D.contact, K = D.collab, h = top(stack.length > 1);
+    h += '<h1 class="h1 disp">Связаться</h1><p class="lead">' + esc(O.title) + '.</p>';
+    var ini = O.person.split(" ").map(function (w) { return w.charAt(0); }).join("").slice(0, 2);
+    h += '<div class="ct-card"><div class="ct-who"><span class="ct-av disp">' + esc(ini) + '</span><span><b>' + esc(O.person) + '</b><span>' + esc(O.role) + '</span></span></div>';
+    h += link(D.contactUrl, "ct-btn", "Написать в Telegram") + '</div>';
+    h += '<div class="rows ct-rows">' + link(O.siteUrl, "row", '<span class="row-body"><span class="row-title">Сайт</span><span class="row-cap">' + esc(O.site) + '</span></span><span class="ar">↗</span>') +
+      link(O.reviewsUrl, "row", '<span class="row-body"><span class="row-title">' + esc(O.reviews) + '</span><span class="row-cap">Яндекс Диск</span></span><span class="ar">↗</span>') +
+      (K ? link(K.url, "row", '<span class="row-body"><span class="row-title">Коллаб для брендов</span><span class="row-cap">Интеграции, спецпроекты, совместные продукты</span></span><span class="ar">↗</span>') : "") + '</div>';
+    h += '<p class="md-g">Свои истории уже рассказали</p><p class="ct-list">' + O.stars.map(function (n) { return esc(n).replace(/ /g, "&nbsp;"); }).join(" · ") + ' и многие другие</p>';
+    h += '<p class="md-g">Нам доверяют</p><p class="ct-list">' + O.clients.map(function (n) { return esc(n).replace(/ /g, "&nbsp;"); }).join(" · ") + '</p>';
+    return h;
   };
 
   S.card = function () {
@@ -4953,7 +4961,6 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     if (sheetOpen) { setMain("Обсудить это шоу", contactAction); return; }
     if (cur === "card" && !state.opened) setMain("Открыть карту", reveal);
     else if (cur === "results" || cur === "catalog" || cur === "eduTeam") setMain(cur === "eduTeam" ? "Написать менеджеру" : "Обсудить событие", cur === "eduTeam" ? function () { openUrl(D.bizManager ? D.bizManager.url : D.contactUrl); } : contactAction);
-    else if (cur === "contact") setMain("Написать в Telegram", contactAction);
     else if (cur === "diag") setMain(D.diag.button, diagSignup);
     else setMain("", null);
   }
