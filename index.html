@@ -4121,6 +4121,7 @@ window.KK_DATA = {
   .ny { position: relative; }
   .nx-ps { font-family: -apple-system, Inter, system-ui, sans-serif; padding-bottom: 10px; }
   .nx-ps img { width: 100%; border-radius: 22px; display: block; margin-bottom: 18px; }
+  .nx-ps-vars { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; } .nx-ps-vars figure { margin: 0; } .nx-ps-vars img { aspect-ratio: 3/4; object-fit: cover; margin-bottom: 6px; border-radius: 18px; } .nx-ps-vars figcaption { font-size: 13px; color: #8E8E93; text-align: center; }
   .nx-ps-tag { font-size: 12px; font-weight: 600; color: var(--red); } .nx-ps h2 { font-size: 40px; margin: 6px 0 4px; }
   .nx-ps-lead { font-size: 20px; font-weight: 600; margin-bottom: 14px; letter-spacing: -.01em; }
   .nx-ps p { font-size: 15px; line-height: 1.5; color: #D1D1D6; margin-bottom: 10px; }
@@ -4588,14 +4589,21 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
 
 
   window.NX_PROD = {
-    bag: { img: "merch-bag.jpg", tag: "Ручная работа · PRSCC", title: "Сумка PRSCC",
+    bag: { img: "merch-bag-black.jpg", tag: "Ручная работа · PRSCC", title: "Сумка PRSCC",
       lead: "Шутки не главное — связи решают",
       text: ["Вязаная сумочка для телефона на длинном шнуре: руки свободны, всё нужное — при себе.",
-             "На нашивке — правило импровизации №4. Носите его с собой: лучшие истории случаются там, где люди замечают друг друга."],
+             "На нашивке — правило импровизации №4. Носите его с собой: лучшие истории случаются там, где люди замечают друг друга.",
+             "Теперь в двух цветах: графитовая и чёрная, обе на красном шнуре."],
       rule: "Цена — 3 500 ₽. Заказ напрямую у мастера @lishapti4kina",
       meta: "Каждая сумка вяжется вручную",
       button: "Заказать у @lishapti4kina",
-      url: "https://t.me/lishapti4kina?text=" + encodeURIComponent("Здравствуйте! Увидел(а) сумку PRSCC в приложении Prosecco Show — хочу купить 🖤") },
+      url: "https://t.me/lishapti4kina?text=" + encodeURIComponent("Здравствуйте! Увидел(а) сумку PRSCC в приложении Prosecco Show — хочу купить 🖤"),
+      variants: [
+        { img: "merch-bag-grey.jpg", name: "Графитовая", button: "Заказать графитовую",
+          url: "https://t.me/lishapti4kina?text=" + encodeURIComponent("Здравствуйте! Увидел(а) сумку PRSCC в приложении Prosecco Show — хочу графитовую 🩶") },
+        { img: "merch-bag-black.jpg", name: "Чёрная", button: "Заказать чёрную",
+          url: "https://t.me/lishapti4kina?text=" + encodeURIComponent("Здравствуйте! Увидел(а) сумку PRSCC в приложении Prosecco Show — хочу чёрную 🖤") }
+      ] },
     shu: { img: "merch-shu.jpg", tag: "Лимитированное издание · Чайная Линия", title: "Prosecco Шу",
       lead: "Чай для смелого «да»",
       text: ["Плотный шу пуэр с глубоким вкусом тёмного шоколада, сухофруктов и тёплого дерева. Собран с деревьев возрастом 80–150 лет.",
@@ -4612,9 +4620,12 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
       meta: "Шен пуэр · 200 г", url: "https://chaline.ru/catalog/chay/puer_i_chyernyy_chay/pressovannyy_shen_puer/173446/" }
   };
   function nxProd(id) {
-    var P = window.NX_PROD[id];
-    return '<div class="nx-ps"><img src="' + wallUrl(P.img) + '" alt=""><span class="nx-ps-tag">' + esc(P.tag) + '</span><h2 class="disp">' + esc(P.title) + '</h2><p class="nx-ps-lead">' + esc(P.lead) + '</p>' +
-      P.text.map(function (t) { return "<p>" + esc(t) + "</p>"; }).join("") + '<div class="nx-ps-rule">' + esc(P.rule).replace("@lishapti4kina", '<a href="' + esc(P.url) + '" data-url="' + esc(P.url) + '" style="color:var(--red)">@lishapti4kina</a>') + '</div><p class="nx-ps-meta">' + esc(P.meta) + '</p>' + pill(P.url, P.button || "Купить на Чайной Линии") + '</div>';
+    var P = window.NX_PROD[id], V = P.variants;
+    var top = V ? '<div class="nx-ps-vars">' + V.map(function (v) { return '<figure><img src="' + wallUrl(v.img) + '" alt="' + esc(P.title + " — " + v.name) + '"><figcaption>' + esc(v.name) + '</figcaption></figure>'; }).join("") + '</div>'
+                : '<img src="' + wallUrl(P.img) + '" alt="">';
+    var btns = V ? V.map(function (v) { return pill(v.url, v.button); }).join("") : pill(P.url, P.button || "Купить на Чайной Линии");
+    return '<div class="nx-ps">' + top + '<span class="nx-ps-tag">' + esc(P.tag) + '</span><h2 class="disp">' + esc(P.title) + '</h2><p class="nx-ps-lead">' + esc(P.lead) + '</p>' +
+      P.text.map(function (t) { return "<p>" + esc(t) + "</p>"; }).join("") + '<div class="nx-ps-rule">' + esc(P.rule).replace("@lishapti4kina", '<a href="' + esc(P.url) + '" data-url="' + esc(P.url) + '" style="color:var(--red)">@lishapti4kina</a>') + '</div><p class="nx-ps-meta">' + esc(P.meta) + '</p>' + btns + '</div>';
   }
   S.home = function () {
     ensureToday();
@@ -4695,7 +4706,7 @@ window.KK_AWARDS = {"ntv": "data:image/webp;base64,UklGRupJAABXRUJQVlA4WAoAAAAQA
     var SHU = "https://chaline.ru/catalog/chay/puer_i_chyernyy_chay/pressovannyy_shu_puer/173417/?oid=223008";
     x += '<button class="nx-p" data-prod="shu"><span class="nx-pi"><img src="' + wallUrl("merch-shu.jpg") + '" alt="Prosecco Шу"></span><b>Prosecco Шу</b><span class="nx-t">Шу пуэр · для смелого «да»</span><span class="nx-buy">Подробнее →</span></button>';
     x += '<button class="nx-p" data-prod="shen"><span class="nx-pi"><img src="' + wallUrl("merch-shen.jpg") + '" alt="Prosecco Шен"></span><b>Prosecco Шен</b><span class="nx-t">Шен пуэр · для чистой головы</span><span class="nx-buy">Подробнее →</span></button>';
-    x += '<button class="nx-p" data-prod="bag"><span class="nx-pi"><img src="' + wallUrl("merch-bag.jpg") + '" alt="Сумка PRSCC"></span><b>Сумка PRSCC</b><span class="nx-t">3 500 ₽ · ручная работа</span><span class="nx-buy">Заказать →</span></button>';
+    x += '<button class="nx-p" data-prod="bag"><span class="nx-pi"><img src="' + wallUrl("merch-bag-black.jpg") + '" alt="Сумка PRSCC"></span><b>Сумка PRSCC</b><span class="nx-t">3 500 ₽ · 2 цвета</span><span class="nx-buy">Заказать →</span></button>';
     x += '</div></section>';
     // AWARDS + PRESS
     x += '<div class="nx-rules rv">' + marq(RULES, "big") + marq(RULES.slice().reverse(), "big out rev") + '</div>';
